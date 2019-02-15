@@ -3,6 +3,7 @@ import { Register } from './Register';
 import { Login } from './Login';
 import { Home } from './Home';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import {PlanHolder} from "./PlanHolder";
 
 export class Main extends React.Component {
 
@@ -24,6 +25,7 @@ export class Main extends React.Component {
                     <Route path="/login" render={this.getLogin}/>
                     <Route path="/register" component={Register}/>
                     <Route path="/home" render={this.getHome}/>
+                    <Route path="/result" component={PlanHolder}/>
                     <Route render={this.getLogin}/>
                 </Switch>
             </div>

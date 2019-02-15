@@ -1,0 +1,43 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,800);
+
+*, *:before, *:after{
+    box-sizing: border-box;
+    padding: 0; margin: 0;
+    font: 300 1em/1.5 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+    text-decoration: none;
+    color: #111;
+}
+
+.plan:hover{cursor: pointer}
+.plan {
+    background: transparent; outline: none;
+    position: relative;
+    border: 2px solid #111;
+    padding: 15px 50px;
+    overflow: hidden;
+}
+
+/*button:before (attr data-hover)*/
+.plan:hover:before{opacity: 1; transform: translate(0,0);}
+.plan:before{
+    content: attr(data-hover);
+    position: absolute;
+    top: 1.1em; left: 0;
+    width: 100%;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 800;
+    font-size: .8em;
+    opacity: 0;
+    transform: translate(-100%,0);
+    transition: all .3s ease-in-out;
+}
+/*button div (button text before hover)*/
+.plan:hover div{opacity: 0; transform: translate(100%,0)}
+.plan div{
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 800;
+    font-size: .8em;
+    transition: all .3s ease-in-out;
+}

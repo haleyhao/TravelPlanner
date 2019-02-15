@@ -1,0 +1,12 @@
+.plan-holder {
+    display: flex;
+    justify-content: center;
+    /*margin-bottom: 200px;*/
+    min-width: 500px;
+    margin: 10% auto;
+    text-align: center;
+}
+.map-holder {
+    display: flex;
+    justify-content: center;
+}

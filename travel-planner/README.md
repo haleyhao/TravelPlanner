@@ -4,6 +4,14 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
+### `google_map_api_key`
+
+Apply your own google maps api key and replace the MAP_KEY in constants.js.
+
+### `npm install`
+
+This command will download all the npm packages needed.
+
 ### `npm start`
 
 Runs the app in the development mode.<br>

@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../assets/images/logo.svg';
+import logo from '../assets/images/pin.jpg';
 import { Icon } from 'antd';
 
 export class TopBar extends React.Component {

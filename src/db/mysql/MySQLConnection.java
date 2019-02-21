@@ -81,4 +81,20 @@ public class MySQLConnection implements DBConnection{
 		return ifCommingSoon;
 	}
 
+	public void deletePlan(String user_id, String plan_id) {
+		if (connection == null) {
+			System.err.println("DS connection failed");
+			return ;
+		}
+		
+		try {
+			String sql = "DELETE FROM plan WHERE plan_id = ? AND user_id = ?";
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ps.setString(1, plan_id);
+			ps.setString(2, user_id);
+			ps.executeUpdate(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+	}
 }

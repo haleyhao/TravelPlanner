@@ -7,6 +7,10 @@ import java.sql.Connection;
 public class MySQLTableCreation {
 	// Run this as Java application to reset db schema.
 	public static void main(String[] args) {
+		
+		//create a new table to store plan information
+		createPlanTable();
+		
 		try {
 			// Step 1 Connect to MySQL.
 			System.out.println("Connecting to " + MySQLDBUtil.URL);
@@ -40,5 +44,38 @@ public class MySQLTableCreation {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}	
+	}
+	
+	public static void createPlanTable() {
+		try {
+			// Step 1 Connect to MySQL.
+			System.out.println("Connecting to " + MySQLDBUtil.URL);
+			Class.forName("com.mysql.cj.jdbc.Driver").getConstructor().newInstance();
+			Connection conn = DriverManager.getConnection(MySQLDBUtil.URL);
+			
+			if (conn == null) {
+				return;
+			}
+			
+			// Step 2 Drop table plan in case it exists.
+			Statement statement = conn.createStatement();
+			String sql = "DROP TABLE IF EXISTS plan";
+			statement.executeUpdate(sql);
+			
+			// Step 3 Create table plan
+			sql = "CREATE TABLE plan ("
+					+ "plan_id VARCHAR(255) NOT NULL,"
+					+ "plance_ids JSON,"
+					+ "user_id VARCHAR(255) NOT NULL,"
+					+ "PRIMARY KEY (plan_id),"
+					+ "FOREIGN KEY (user_9d) REFERENCES user(email)"
+					+ ")";
+			statement.executeUpdate(sql);
+			
+			System.out.println("Import done successfully");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

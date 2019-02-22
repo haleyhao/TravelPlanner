@@ -4,6 +4,7 @@ import {Plan} from "./Plan";
 import Map from "./Map";
 import '../index.css';
 import {geocodeByPlaceId, getLatLng} from "react-places-autocomplete";
+import {History} from "./History";
 
 export class PlanHolder extends React.Component {
   place_ids_arr = PLACE_IDS;
@@ -131,13 +132,17 @@ export class PlanHolder extends React.Component {
                 return <Plan key={index} place_ids={place_ids} index={index}
                              handleMouseHover={this.handleMouseHover} handleClick={this.handleClick}/>
               })}
+
             </div>
           }
+          <History className="history"/>
+          <button>Save</button>
           <div className='map-holder'>
             <Map placeIds={this.state.hoveredIndex > -1 ? this.state.placeIds[this.state.hoveredIndex] : []}
                  placeNames={this.state.hoveredIndex > -1 ? this.state.placeNames[this.state.hoveredIndex] : []}
                  placeGeos={this.state.hoveredIndex > -1 ? this.state.placeGeos[this.state.hoveredIndex] : []}/>
           </div>
+
         </div>
     );
   }

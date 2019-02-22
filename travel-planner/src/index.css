@@ -8,6 +8,7 @@
 @import './styles/PlanHolder.css';
 @import './styles/Plan.css';
 @import './styles/Map.css';
+@import "./styles/History.css";
 
 body {
   margin: 0;

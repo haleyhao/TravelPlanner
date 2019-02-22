@@ -65,9 +65,10 @@ public class MySQLTableCreation {
 			// Step 3 Create table plan
 			sql = "CREATE TABLE plan ("
 					+ "plan_id VARCHAR(255) NOT NULL,"
-					+ "plance_ids BLOB(1024),"
+					+ "plance_ids VARCHAR(255),"
 					+ "user_id VARCHAR(255) NOT NULL,"
 					+ "PRIMARY KEY (plan_id),"
+					+ "FOREIGN KEY (user_id) REFERENCES user(email)"
 					+ ")";
 			statement.executeUpdate(sql);
 			

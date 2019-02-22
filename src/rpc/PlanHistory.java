@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import db.DBConnection;
+import db.DBConnectionFactory;
 import db.mysql.MySQLConnection;
 
 @WebServlet("/history")
@@ -28,9 +30,29 @@ public class PlanHistory extends HttpServlet {
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
-	//TO DO: For addPlan
+	//TO DO: For savePlan
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
+		// TODO Auto-generated method stub
+	   	 DBConnection connection = DBConnectionFactory.getConnection();
+	   	 try {
+	   		 JSONObject input = RpcHelper.readJSONObject(request);
+	   		 String planId = input.getString("plan_id");
+	   		 JSONArray array = input.getJSONArray("place_ids");
+	   		 List<String> placeIds = new ArrayList<>();
+	   		 for(int i = 0; i < array.length(); ++i) {
+	   			placeIds.add(array.getString(i));
+	   		 }
+	   		 
+	   		 connection.savePlan(planId, placeIds);
+	   		 RpcHelper.writeJsonObject(response, new JSONObject().put("result", "SUCCESS"));
+	   		 
+	   	 } catch (Exception e) {
+	   		 e.printStackTrace();
+	   	 } finally {
+	   		 if (connection != null) {
+	   			connection.close(); 
+	   		 }	   		 
+	   	 }
 	}
 
 	//For deletePlan

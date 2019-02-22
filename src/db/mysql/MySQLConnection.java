@@ -97,4 +97,27 @@ public class MySQLConnection implements DBConnection{
 			e.printStackTrace();
 		}	
 	}
+
+	@Override
+	public void savePlan(String planId, List<String> placeIds) {
+		// TODO Auto-generated method stub
+		if (connection == null) {
+			System.err.println("DB connection failed");
+			return;
+			}
+		
+		try {
+			String sql = "INSERT IGNORE INTO plan(plan_id, place_ids) VALUES (?, ?)";
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ps.setString(1, planId);
+			
+			for (String placeId : placeIds) {
+				ps.setString(2, placeId);
+				ps.execute();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		
+	}
 }

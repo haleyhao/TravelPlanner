@@ -24,6 +24,14 @@ public interface DBConnection {
 	 * @return string of status
 	 */
 	public String getIfCommingSoon(String cityId);
+	
+	/**
+	 * Get the city name for a city.
+	 * 
+	 * @param userId
+	 * @return cityList
+	 */
+	public void savePlan(String planId, List<String> placeIds);
 
 }
 

@@ -13,7 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import db.mysql.MySQLConnection;
+import db.DBConnection;
+import db.DBConnectionFactory;
 
 @WebServlet("/history")
 public class PlanHistory extends HttpServlet {
@@ -28,22 +29,47 @@ public class PlanHistory extends HttpServlet {
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
-	//TO DO: For addPlan
+	//TO DO: For savePlan
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
+		
+	   	 DBConnection connection = DBConnectionFactory.getConnection();
+	   	 try {
+	   		 System.out.println("get post request");
+	   		 JSONObject input = RpcHelper.readJSONObject(request);
+	   		 String userId = input.getString("user_id");
+	   		 System.out.println(userId);
+	   		 String planId = input.getString("plan_id");
+	   		 System.out.println(planId);
+	   		 JSONArray array = input.getJSONArray("place_ids");
+	   		 System.out.println(array.toString());
+	   		 List<String> placeIds = new ArrayList<>();
+	   		 for(int i = 0; i < array.length(); ++i) {
+	   			placeIds.add(array.getString(i));
+	   		 }
+
+	   		 connection.savePlan(userId, planId, array);
+	   		 RpcHelper.writeJsonObject(response, new JSONObject().put("result", "SUCCESS"));
+
+	   	 } catch (Exception e) {
+	   		 e.printStackTrace();
+	   	 } finally {
+	   		 if (connection != null) {
+	   			connection.close(); 
+	   		 }
+	   	 }
 	}
 
 	//For deletePlan
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		MySQLConnection conn = new MySQLConnection();
+		DBConnection conn = DBConnectionFactory.getConnection();
 		
 		try {
 			
 			JSONObject input = RpcHelper.readJSONObject(request);
 			String userId = input.getString("user_id");
-			String plan_Id = input.getString("plan_id");
-			conn.deletePlan(userId, plan_Id);
+			String planId = input.getString("plan_id");
+			conn.deletePlan(userId, planId);
 			RpcHelper.writeJsonObject(response, new JSONObject().put("result","SUCCESS"));
 			
 		} catch (Exception e) {

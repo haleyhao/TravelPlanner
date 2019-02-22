@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.json.JSONArray;
+
 import com.mysql.cj.jdbc.Driver;
 
 import db.DBConnection;
@@ -80,7 +82,9 @@ public class MySQLConnection implements DBConnection{
 
 		return ifCommingSoon;
 	}
-
+	
+	
+	@Override
 	public void deletePlan(String user_id, String plan_id) {
 		if (connection == null) {
 			System.err.println("DS connection failed");
@@ -88,13 +92,34 @@ public class MySQLConnection implements DBConnection{
 		}
 		
 		try {
-			String sql = "DELETE FROM plan WHERE plan_id = ? AND user_id = ?";
+			String sql = "DELETE FROM plan WHERE plan_id = ? and user_id = ?";
 			PreparedStatement ps = connection.prepareStatement(sql);
+			System.out.println(plan_id + user_id);
 			ps.setString(1, plan_id);
 			ps.setString(2, user_id);
-			ps.executeUpdate(sql);
+			ps.execute();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void savePlan(String userId, String planId, JSONArray placeIdArray) {
+		if (connection == null) {
+			System.err.println("DB connection failed");
+			return;
+			}
+
+		try {
+			String sql = "INSERT IGNORE INTO plan(plan_id, place_ids, user_id) VALUES (?, ?, ?)";
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ps.setString(1, planId);
+			ps.setString(2, placeIdArray.toString());
+			ps.setString(3, userId);
+			ps.execute();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}	
+
 	}
 }

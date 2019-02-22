@@ -45,7 +45,7 @@ public class RecommendPlans extends HttpServlet {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

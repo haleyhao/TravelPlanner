@@ -47,6 +47,7 @@ public class MySQLTableCreation {
 	}
 	
 	public static void createPlanTable() {
+		
 		try {
 			// Step 1 Connect to MySQL.
 			System.out.println("Connecting to " + MySQLDBUtil.URL);
@@ -65,11 +66,15 @@ public class MySQLTableCreation {
 			// Step 3 Create table plan
 			sql = "CREATE TABLE plan ("
 					+ "plan_id VARCHAR(255) NOT NULL,"
-					+ "plance_ids JSON,"
+					+ "place_ids JSON NOT NULL,"
 					+ "user_id VARCHAR(255) NOT NULL,"
-					+ "PRIMARY KEY (plan_id),"
-					+ "FOREIGN KEY (user_9d) REFERENCES user(email)"
+					+ "PRIMARY KEY (plan_id)"
+//					+ "FOREIGN KEY (user_id) REFERENCES user(email)"
 					+ ")";
+			statement.executeUpdate(sql);
+			
+			// Step 4: insert fake plan: plan_id: 1, user_id: 1, place_ids ["1","2","3"]
+			sql = "INSERT INTO plan VALUES('1','[\"1\",\"2\",\"3\"]','1')";
 			statement.executeUpdate(sql);
 			
 			System.out.println("Import done successfully");

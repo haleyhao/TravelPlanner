@@ -3,6 +3,8 @@ package db;
 import java.util.List;
 import java.util.Set;
 
+import org.json.JSONArray;
+
 public interface DBConnection {
 	/**
 	 * Close the connection.
@@ -16,7 +18,7 @@ public interface DBConnection {
 	 * @return cityList
 	 */
 	public Set<String> getCitys(String userId);
-	
+
 	/**
 	 * Gets categories based on item id
 	 * 
@@ -25,6 +27,8 @@ public interface DBConnection {
 	 */
 	public String getIfCommingSoon(String cityId);
 
+	public void savePlan(String userId, String planId, JSONArray placeIds);
+	
+	public void deletePlan(String user_id, String plan_id);
+
 }
-
-

@@ -6,6 +6,11 @@
     display: flex;
 }
 .selected-places-list {
-    background: #f5f5f5;
+    background: aliceblue;
+    border-radius: 10px;
     /*height: 600px;*/
+}
+.selected-places-list-content {
+    display: flex;
+    justify-content: space-between;
 }

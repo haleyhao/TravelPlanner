@@ -26,11 +26,11 @@ export class PlanHolder extends React.Component {
     };
   }
 
-  async componentDidMount() {
-    setTimeout(this.handlePlaces, 500);
-  }
+  // async componentDidMount() {
+  //   setTimeout(this.handlePlaces, 5000);
+  // }
 
-  handlePlaces = async () => {
+  handlePlaces = () => {
 
     // console.log(this.state);
 
@@ -56,7 +56,7 @@ export class PlanHolder extends React.Component {
 
     for (let i = 0; i < placeIds.length; i++) {
       for (let j = 0; j < placeIds[i].length; j++) {
-        await geocodeByPlaceId(placeIds[i][j])
+        geocodeByPlaceId(placeIds[i][j])
             .then((results) => {
               // console.log(i, j);
               // console.log(results[0].address_components[0].long_name);
@@ -116,7 +116,7 @@ export class PlanHolder extends React.Component {
   }
 
   handleClick() {
-    console.log('handleCLick');
+    // console.log('handleCLick');
     this.setState({isClicked: true});
   }
 
@@ -140,7 +140,9 @@ export class PlanHolder extends React.Component {
           <div className='map-holder'>
             <Map placeIds={this.state.hoveredIndex > -1 ? this.state.placeIds[this.state.hoveredIndex] : []}
                  placeNames={this.state.hoveredIndex > -1 ? this.state.placeNames[this.state.hoveredIndex] : []}
-                 placeGeos={this.state.hoveredIndex > -1 ? this.state.placeGeos[this.state.hoveredIndex] : []}/>
+                 placeGeos={this.state.hoveredIndex > -1 ? this.state.placeGeos[this.state.hoveredIndex] : []}
+                 handlePlaces={this.handlePlaces}
+            />
           </div>
 
         </div>

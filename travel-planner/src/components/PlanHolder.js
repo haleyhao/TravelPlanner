@@ -35,7 +35,7 @@ export class PlanHolder extends React.Component {
     // console.log(this.state);
 
     let placeIds = PLACE_IDS.map((PLACE_ID) => {
-      return PLACE_ID.placeIds;
+      return PLACE_ID.place_ids;
     });
 
     let placeNames = [];
@@ -135,15 +135,18 @@ export class PlanHolder extends React.Component {
 
             </div>
           }
-          <History className="history"/>
-          <button>Save</button>
-          <div className='map-holder'>
-            <Map placeIds={this.state.hoveredIndex > -1 ? this.state.placeIds[this.state.hoveredIndex] : []}
-                 placeNames={this.state.hoveredIndex > -1 ? this.state.placeNames[this.state.hoveredIndex] : []}
-                 placeGeos={this.state.hoveredIndex > -1 ? this.state.placeGeos[this.state.hoveredIndex] : []}
-                 handlePlaces={this.handlePlaces}
-            />
+          <div className="history-map-holder">
+            <History className="history"/>
+            {/*<button>Save</button>*/}
+            <div className='map-holder'>
+              <Map placeIds={this.state.hoveredIndex > -1 ? this.state.placeIds[this.state.hoveredIndex] : []}
+                   placeNames={this.state.hoveredIndex > -1 ? this.state.placeNames[this.state.hoveredIndex] : []}
+                   placeGeos={this.state.hoveredIndex > -1 ? this.state.placeGeos[this.state.hoveredIndex] : []}
+                   handlePlaces={this.handlePlaces}
+              />
+            </div>
           </div>
+
 
         </div>
     );

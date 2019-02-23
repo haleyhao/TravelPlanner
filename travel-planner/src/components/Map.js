@@ -41,7 +41,7 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 };
 const grid = 8;
 const getListStyle = isDraggingOver => ({
-  background: isDraggingOver ? 'lightblue' : 'lightgrey',
+  background: isDraggingOver ? 'lightblue' : 'grey',
   padding: grid,
   width: 250
 });
@@ -53,7 +53,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   margin: `0 0 ${grid}px 0`,
 
   // change background colour if dragging
-  background: isDragging ? 'lightgreen' : 'grey',
+  background: isDragging ? 'lightgreen' : 'lightgrey',
 
   // styles we need to apply on draggables
   ...draggableStyle

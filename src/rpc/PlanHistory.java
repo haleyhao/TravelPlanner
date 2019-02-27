@@ -2,6 +2,7 @@ package rpc;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -15,6 +16,8 @@ import org.json.JSONObject;
 
 import db.DBConnection;
 import db.DBConnectionFactory;
+import entity.Plan;
+import recommendaton.PlanRecommender;
 
 @WebServlet("/history")
 public class PlanHistory extends HttpServlet {
@@ -24,12 +27,33 @@ public class PlanHistory extends HttpServlet {
         super();
     }
 
-    //TO DO: For fetchPlan and fetchPlans
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		String email = request.getParameter("user_id");
+		String planId = request.getParameter("plan_id");
+		
+		DBConnection connection = DBConnectionFactory.getConnection();
+		try {
+			if (planId == null) { //fetch all plans of a user
+				JSONArray array = new JSONArray();
+				for (Plan plan : connection.fetchPlans(email)) {
+					JSONObject obj = plan.toJSONObject();
+					array.put(obj);
+				}
+				RpcHelper.writeJsonArray(response, array);	
+			} else { //fetch one plan of a user
+				JSONObject obj = connection.fetchPlan(email, planId).toJSONObject();
+				RpcHelper.writeJsonObject(response, obj);
+			}
+			System.out.println("finish");		
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (connection != null) {
+				connection.close(); 
+			}
+		}
 	}
 
-	//TO DO: For savePlan
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 	   	 DBConnection connection = DBConnectionFactory.getConnection();
@@ -40,14 +64,14 @@ public class PlanHistory extends HttpServlet {
 	   		 System.out.println(userId);
 	   		 String planId = input.getString("plan_id");
 	   		 System.out.println(planId);
-	   		 JSONArray array = input.getJSONArray("place_ids");
-	   		 System.out.println(array.toString());
+	   		 JSONArray placeIdArray = input.getJSONArray("place_ids");
+	   		 System.out.println(placeIdArray.toString());
 	   		 List<String> placeIds = new ArrayList<>();
-	   		 for(int i = 0; i < array.length(); ++i) {
-	   			placeIds.add(array.getString(i));
+	   		 for(int i = 0; i < placeIdArray.length(); ++i) {
+	   			placeIds.add(placeIdArray.getString(i));
 	   		 }
 
-	   		 connection.savePlan(userId, planId, array);
+	   		 connection.savePlan(userId, planId, placeIdArray);
 	   		 RpcHelper.writeJsonObject(response, new JSONObject().put("result", "SUCCESS"));
 
 	   	 } catch (Exception e) {
@@ -59,7 +83,6 @@ public class PlanHistory extends HttpServlet {
 	   	 }
 	}
 
-	//For deletePlan
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		DBConnection conn = DBConnectionFactory.getConnection();

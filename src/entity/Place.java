@@ -4,6 +4,7 @@ public class Place {
 	private String place_id;
 	private String name;
 	private String formatted_address;
+	private String city;
 	private double lat;
 	private double lon;
 	private double rating;
@@ -21,12 +22,24 @@ public class Place {
 		return place_id;
 	}
 	
+	public String getAddress() {
+		return formatted_address;
+	}
+	
 	public double getLon() {
 		return lon;
 	}
-	
+	public double getRating() {
+		return rating;
+	}
+	public int getTotalRated() {
+		return user_ratings_total;
+	}
 	public double getLat() {
 		return lat;
+	}
+	public String getCity() {
+		return city;
 	}
 	
 	private Place(PlaceBuilder builder) {
@@ -37,6 +50,7 @@ public class Place {
 		this.lat = builder.lat;
 		this.lon = builder.lon;
 		this.user_ratings_total = builder.user_ratings_total;
+		this.city = builder.city;
 		
 	}
 	
@@ -44,6 +58,7 @@ public class Place {
 		private String place_id;
 		private String name;
 		private String formatted_address;
+		private String city;
 		private double lat;
 		private double lon;
 		private double rating;
@@ -71,6 +86,10 @@ public class Place {
 		}
 		public PlaceBuilder setRating(double rating) {
 			this.rating = rating;
+			return this;
+		}
+		public PlaceBuilder setCity(String city) {
+			this.city = city;
 			return this;
 		}
 		public PlaceBuilder setRaingTotal(int user_ratings_total) {

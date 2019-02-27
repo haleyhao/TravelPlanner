@@ -44,13 +44,13 @@ public class GoogleMapApi {
 		List<Place> placeList = new ArrayList<>();
 		String nextToken = "";
 		while (placeList.size() < maxNum) {
-			nextToken = getNext20(placeList, url + (nextToken.isEmpty() ? "" : "&pagetoken=" + nextToken));
+			nextToken = getNext20(placeList, url + (nextToken.isEmpty() ? "" : "&pagetoken=" + nextToken), city);
 			if(nextToken.isEmpty()) break;
 		}
 		return placeList;
 	}
 	
-	public String getNext20(List<Place> placeList, String url) {
+	public String getNext20(List<Place> placeList, String url, String city) {
 		System.out.println(url);
 		String nextToken = "";
 		try {
@@ -79,7 +79,7 @@ public class GoogleMapApi {
 
 			//{"results", jsonArray[]}
 			if (!obj.isNull("results")) {
-				placeList.addAll(getPlaceList(obj.getJSONArray("results")));
+				placeList.addAll(getPlaceList(obj.getJSONArray("results"), city));
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -96,7 +96,7 @@ public class GoogleMapApi {
 	}
 	
 	// Convert JSONArray to a list of item objects.
-	private List<Place> getPlaceList(JSONArray places) throws JSONException {
+	private List<Place> getPlaceList(JSONArray places, String city) throws JSONException {
 		
 		List<Place> placeList = new ArrayList<>();
 		
@@ -124,6 +124,8 @@ public class GoogleMapApi {
 			if (!place.isNull("geometry")) {
 				builder.setLocation(getLat(place), getLon(place));
 			}
+			
+			builder.setCity(city);
 			
 			placeList.add(builder.build());
 		}

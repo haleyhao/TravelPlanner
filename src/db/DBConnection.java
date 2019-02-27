@@ -5,6 +5,9 @@ import java.util.Set;
 
 import org.json.JSONArray;
 
+import entity.Place;
+import entity.Plan;
+
 public interface DBConnection {
 	/**
 	 * Close the connection.
@@ -30,5 +33,20 @@ public interface DBConnection {
 	public void savePlan(String userId, String planId, JSONArray placeIds);
 	
 	public void deletePlan(String user_id, String plan_id);
-
+	
+	public Plan fetchPlan(String user_id, String plan_id);
+	
+	public List<Plan> fetchPlans(String email);
+	
+	public String getFullname(String userId);
+	
+	public boolean verifyLogin(String userId, String password);
+	
+	public boolean addNewUser(String email, String password, String name);
+	
+	public Place getPlace(String place_id);
+	
+	public void savePlaces(List<Place> placeList);
+	
+	public List<Place> getAllPlaces(String city);
 }

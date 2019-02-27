@@ -2,8 +2,10 @@ package recommendaton;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Set;
-import java.util.HashSet;
+
+import db.DBConnection;
+import db.DBConnectionFactory;
+
 import java.util.List;
 
 
@@ -15,32 +17,39 @@ import external.GoogleMapApi;
 public class PlanRecommender {
 	
 	public Plan recommend(String city, String keyword, int PlaceNum) {
-		GoogleMapApi api = new GoogleMapApi();
-		List<Place> candidateList = api.search(city, keyword, PlaceNum * 2);		
-		Collections.sort(candidateList, (p1, p2) -> (int) (p2.getTotalScore() - p1.getTotalScore()));
+		//get candidate place list from Google map API: too slow
+//		GoogleMapApi api = new GoogleMapApi();
+//		List<Place> candidateList = api.search(city, keyword, PlaceNum * 2);
+		
+		List<Place> candidateList = new ArrayList<>();
+		DBConnection connection = DBConnectionFactory.getConnection();
+		try {
+			//get candidate place list from DB
+			candidateList = connection.getAllPlaces(city);
+		} catch (Exception e) {
+   	 		e.printStackTrace();
+   	 	} finally {
+   	 		if (connection != null) {
+   	 			connection.close(); 
+   	 		}
+   	 	}
 		
 		
-//		Set<String> names = new HashSet<>();
-//		int i = 0;
-//		for (Place p : placeList) {
-//			System.out.println(i + " " + p.getName() + p.getTotalScore());
-//			names.add(p.getName());
-//			i++;
-//		}
-//		System.out.println("Univque number is " + names.size());
+		//Sort by on popularity
+		Collections.sort(candidateList, (p1, p2) -> (int) (p2.getTotalScore() - p1.getTotalScore()));	
 		
-		
-		List<String> placeIdList = new ArrayList<>();
+		List<Place> placeList = new ArrayList<>();
 		
 		for (int i = 0; i < candidateList.size() && i < PlaceNum; i++) {
-			placeIdList.add(candidateList.get(i).getPlaceId());
+			placeList.add(candidateList.get(i));
 		}
 
 		
 		String plan_id = PlanIdGenerator.getUsableId();
 		Plan plan = new Plan(plan_id);
-		plan.updatePlaceIdList(placeIdList);
+		plan.updatePlaceList(placeList);
 		return plan;
+		
 	}
 	
 	public static void main(String[] args) {
@@ -48,4 +57,5 @@ public class PlanRecommender {
 		Plan plan = test.recommend("New York", null, 150);
 		System.out.println(plan.toJSONObject().toString());
 	}
+
 }

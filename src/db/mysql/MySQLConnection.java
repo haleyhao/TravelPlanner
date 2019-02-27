@@ -71,16 +71,16 @@ public class MySQLConnection implements DBConnection{
 	}
 
 	@Override
-	public String getIfCommingSoon(String cityId) {
+	public String getIfCommingSoon(String city) {
 		if (connection == null) {
 			return "";
 		}
 		
 		String ifCommingSoon = "";
 		try {
-			String sql = "SELECT commingSoon FROM citys WHERE city_id = ?";
+			String sql = "SELECT commingSoon FROM citys WHERE city_name = ?";
 			PreparedStatement statement = connection.prepareStatement(sql);
-			statement.setString(1, cityId);
+			statement.setString(1, city);
 			ResultSet rs = statement.executeQuery();
 			if (rs.next()) {
 				ifCommingSoon = rs.getString("commingSoon");
@@ -145,7 +145,7 @@ public class MySQLConnection implements DBConnection{
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
 				List<Place> placeList = new ArrayList<Place>();
-				Plan plan = new Plan("plan_id");
+				Plan plan = new Plan(rs.getString("plan_id"));
 				System.out.println(rs.getString("place_ids"));
 				JSONArray array = new JSONArray(rs.getString("place_ids"));
 				for (int i = 0; i < array.length(); i++) {
@@ -209,7 +209,7 @@ public class MySQLConnection implements DBConnection{
 		}
 		String fullName = "";
 		try {
-			String sql = "SELECT first_name, last_name FROM users WHERE user_id = ?";
+			String sql = "SELECT name FROM users WHERE email = ?";
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.setString(1, email);
 			ResultSet rs = ps.executeQuery();
@@ -358,12 +358,12 @@ public class MySQLConnection implements DBConnection{
 //   		 	connection.savePlaces(result);
 			
 			//test getPlace
-//			Place place = connection.getPlace("ChIJnxlg1U5YwokR8T90UrZiIwI");
-//			System.out.println(place.getName());
+			Place place = connection.getPlace("ChIJnxlg1U5YwokR8T90UrZiIwI");
+			System.out.println(place.getName());
 			
 			//test fetchPlan
-			Plan plan =connection.fetchPlan("1", "1");
-			System.out.println(plan.toJSONObject().toString());
+//			Plan plan =connection.fetchPlan("1", "1");
+//			System.out.println(plan.toJSONObject().toString());
 			
 			//test getAllPlaces
 //			List<Place> places = connection.getAllPlaces("new york");

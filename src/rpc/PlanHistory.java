@@ -16,7 +16,9 @@ import org.json.JSONObject;
 
 import db.DBConnection;
 import db.DBConnectionFactory;
+import entity.Place;
 import entity.Plan;
+import external.GoogleMapApi;
 import recommendaton.PlanRecommender;
 
 @WebServlet("/history")
@@ -39,7 +41,7 @@ public class PlanHistory extends HttpServlet {
 					JSONObject obj = plan.toJSONObject();
 					array.put(obj);
 				}
-				RpcHelper.writeJsonArray(response, array);	
+				RpcHelper.writeJsonArray(response, array);
 			} else { //fetch one plan of a user
 				JSONObject obj = connection.fetchPlan(email, planId).toJSONObject();
 				RpcHelper.writeJsonObject(response, obj);
@@ -66,11 +68,23 @@ public class PlanHistory extends HttpServlet {
 	   		 System.out.println(planId);
 	   		 JSONArray placeIdArray = input.getJSONArray("place_ids");
 	   		 System.out.println(placeIdArray.toString());
-	   		 List<String> placeIds = new ArrayList<>();
+	   		 
+	   		 /*
+	   		  * check if the place is in the DB.
+	   		  * If not, fetch place detail from Google map API and save to DB
+	   		  */
+	   		 List<Place> newPlaces = new ArrayList<>();
+	   		 GoogleMapApi googleApi = new GoogleMapApi();
 	   		 for(int i = 0; i < placeIdArray.length(); ++i) {
-	   			placeIds.add(placeIdArray.getString(i));
+	   			String place_id = placeIdArray.getString(i);
+	   			if (connection.getPlace(place_id) == null) {
+	   				Place newPlace = googleApi.getPlaceDetail(place_id);
+	   				if (newPlace != null) {
+	   					newPlaces.add(newPlace);
+	   				}
+	   			}
 	   		 }
-
+	   		 connection.savePlaces(newPlaces);
 	   		 connection.savePlan(userId, planId, placeIdArray);
 	   		 RpcHelper.writeJsonObject(response, new JSONObject().put("result", "SUCCESS"));
 

@@ -14,7 +14,7 @@ import org.json.JSONObject;
 import db.DBConnection;
 import db.DBConnectionFactory;
 
-@WebServlet("/Register")
+@WebServlet("/register")
 public class Register extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -30,17 +30,16 @@ public class Register extends HttpServlet {
 		
 		DBConnection conn = DBConnectionFactory.getConnection();
 		try {
-			
 			JSONObject obj = RpcHelper.readJSONObject(request);
-			String email = obj.getString("email");
+			String user_id = obj.getString("user_id");
 			String password = obj.getString("password");
 			String name = obj.getString("name");
 			
 			JSONObject returnObj = new JSONObject();
-			if (conn.getFullname(email).isEmpty()) {
-				conn.addNewUser(email, password, name);
+			if (conn.getFullname(user_id).isEmpty()) {
+				conn.addNewUser(user_id, password, name);
 				HttpSession session = request.getSession(); //a new one is created since no one in the request
-				session.setAttribute("email", email);
+				session.setAttribute("user_id", user_id);
 				session.setMaxInactiveInterval(600); //time out
 				returnObj.put("status", "OK");
 			} else {

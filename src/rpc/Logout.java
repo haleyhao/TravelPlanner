@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 @WebServlet("/logout")
 public class Logout extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -22,10 +25,18 @@ public class Logout extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
-		if (session != null) {
-			session.invalidate();
+		JSONObject returnObj = new JSONObject();
+		try {
+			if (session != null) {
+				session.invalidate();
+				returnObj.put("status", "Logout SUCCESS");
+			} else {
+				returnObj.put("status", "Not logged in");
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
-		response.sendRedirect("index.html");
+		RpcHelper.writeJsonObject(response, returnObj);
 	}
 
 }

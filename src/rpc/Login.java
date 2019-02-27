@@ -23,25 +23,23 @@ public class Login extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		DBConnection conn = DBConnectionFactory.getConnection();
-		
+		DBConnection connection = DBConnectionFactory.getConnection();
 		try {
 			HttpSession session = request.getSession(false);
 			JSONObject obj = new JSONObject();
-
+			
 			if (session != null) {
-				String email = session.getAttribute("email").toString();
-				obj.put("status", "OK").put("email", email).put("name", conn.getFullname(email));
+				String user_id = session.getAttribute("user_id").toString();
+				obj.put("status", "OK").put("user_id", user_id).put("name", connection.getFullname(user_id));
 			} else {
-				response.setStatus(403); // No authorization
-				obj.put("status", "Invalid session!");
+				response.setStatus(403);
+				obj.put("status", "Invalid Session");
 			}
 			RpcHelper.writeJsonObject(response, obj);
-			
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			conn.close();
+			connection.close();
 		}
 	}
 
@@ -51,16 +49,16 @@ public class Login extends HttpServlet {
 		try {
 			
 			JSONObject obj = RpcHelper.readJSONObject(request);
-			String email = obj.getString("email");
+			String user_id = obj.getString("user_id");
 			String password = obj.getString("password");
 			
 			JSONObject returnObj = new JSONObject();
-			if (conn.verifyLogin(email, password)) {
+			if (conn.verifyLogin(user_id, password)) {
 				
 				HttpSession session = request.getSession(); //a new one is created since no one in the request
-				session.setAttribute("email", email);
+				session.setAttribute("user_id", user_id);
 				session.setMaxInactiveInterval(600); //time out
-				returnObj.put("status", "OK").put("email", email).put("name", conn.getFullname(email));
+				returnObj.put("status", "OK").put("user_id", user_id).put("name", conn.getFullname(user_id));
 				
 			} else {
 				response.setStatus(401); // No such user

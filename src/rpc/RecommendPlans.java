@@ -12,27 +12,29 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import db.DBConnection;
+import db.DBConnectionFactory;
+import entity.Place;
 import entity.Plan;
 import recommendaton.PlanRecommender;
 
 @WebServlet("/recommend")
 public class RecommendPlans extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
     public RecommendPlans() {
         super();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String city = request.getParameter("city");
-		String keyword = request.getParameter("keyword");
+		String city = request.getParameter("city").trim();
+		String keyword = request.getParameter("keyword").trim();
 		
 		try {
-
 			JSONArray array = new JSONArray();
-			List<Integer> lengths = Arrays.asList(5,10,15);
+			List<Integer> lengths = Arrays.asList(3,6,9);
 			PlanRecommender planner = new PlanRecommender();
 			for (int len : lengths) {
 				Plan plan = planner.recommend(city, keyword, len);
@@ -41,11 +43,9 @@ public class RecommendPlans extends HttpServlet {
 			}
 			System.out.println("finish");
 			RpcHelper.writeJsonArray(response, array);
-			
 		} catch(Exception e) {
 			e.printStackTrace();
-		}
-
+   	 	}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

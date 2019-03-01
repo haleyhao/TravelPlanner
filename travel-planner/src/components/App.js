@@ -5,9 +5,12 @@ import {TOKEN_KEY} from '../constants';
 
 class App extends Component {
 
-  state = {
-    isLoggedIn: Boolean(localStorage.getItem(TOKEN_KEY)),
-  };
+  // state = {
+  //   isLoggedIn: Boolean(localStorage.getItem(TOKEN_KEY)),
+  // };
+     state = {
+        isLoggedIn: false
+    };
 
   handleSuccessfulLogin = (data) => {
     localStorage.setItem('user_id', data.user_id);

@@ -1,106 +1,108 @@
-import React from 'react';
-import {MAP_API_KEY, MAP_LIBRARIES} from "../constants";
-import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
-import {Icon} from "antd";
+import React from "react";
+import { MAP_API_KEY, MAP_LIBRARIES } from "../constants";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { Icon } from "antd";
 
-const {compose, withProps, lifecycle} = require("recompose");
+const { compose, withProps, lifecycle } = require("recompose");
 const {
   withScriptjs,
   withGoogleMap,
   GoogleMap,
-  DirectionsRenderer,
+  DirectionsRenderer
 } = require("react-google-maps");
 /*global google*/
 
 // Define the map area
 const MapWithADirectionsRenderer = compose(
-    withProps({
-      googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${MAP_API_KEY}&v=3.exp&libraries=${MAP_LIBRARIES}`,
-      loadingElement: <div style={{height: `100%`}}/>,
-      containerElement: <div style={{height: `450px`, width: `450px`}}/>,
-      mapElement: <div style={{height: `100%`}}/>,
-    }),
-    withScriptjs,
-    withGoogleMap,
-    lifecycle({
-      componentDidMount() {
-        this.setState({
-          directionService: new google.maps.DirectionsService(),
-        });
-      },
-      componentDidUpdate(prevProps, prevState) {
-        // console.log(this.state);
+  withProps({
+    googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${MAP_API_KEY}&v=3.exp&libraries=${MAP_LIBRARIES}`,
+    loadingElement: <div style={{ height: `100%` }} />,
+    containerElement: <div style={{ height: `450px`, width: `450px` }} />,
+    mapElement: <div style={{ height: `100%` }} />
+  }),
+  withScriptjs,
+  withGoogleMap,
+  lifecycle({
+    componentDidMount() {
+      this.setState({
+        directionService: new google.maps.DirectionsService()
+      });
+    },
+    componentDidUpdate(prevProps, prevState) {
+      // console.log(this.state);
 
-        if (this.props.placeIds === undefined || this.props.placeIds === null || this.props.placeIds.length < 2) {
-          if (this.state.directions !== undefined) {
-            this.setState({directions: undefined});
-          }
-          return;
-
+      if (
+        this.props.placeIds === undefined ||
+        this.props.placeIds === null ||
+        this.props.placeIds.length < 2
+      ) {
+        if (this.state.directions !== undefined) {
+          this.setState({ directions: undefined });
         }
-        // if the place ids changed, resend the request to MAP API
-        if (prevProps.placeIds !== this.props.placeIds) {
-
-          // generate the way points
-          // console.log('a');
-          let len = this.props.placeIds.length;
-          let wypts = [];
-          for (let i = 1; i < len - 1; i++) {
-            wypts.push({
-              location: {placeId: this.props.placeIds[i]},
-              stopover: true
-            });
-          }
-          // console.log(wypts);
-          this.state.directionService.route({
-            origin: {placeId: this.props.placeIds[0]},
+        return;
+      }
+      // if the place ids changed, resend the request to MAP API
+      if (prevProps.placeIds !== this.props.placeIds) {
+        // generate the way points
+        // console.log('a');
+        let len = this.props.placeIds.length;
+        let wypts = [];
+        for (let i = 1; i < len - 1; i++) {
+          wypts.push({
+            location: { placeId: this.props.placeIds[i] },
+            stopover: true
+          });
+        }
+        // console.log(wypts);
+        this.state.directionService.route(
+          {
+            origin: { placeId: this.props.placeIds[0] },
             waypoints: wypts,
-            destination: {placeId: this.props.placeIds[len - 1]},
-            travelMode: google.maps.TravelMode.DRIVING,
-          }, (result, status) => {
+            destination: { placeId: this.props.placeIds[len - 1] },
+            travelMode: google.maps.TravelMode.DRIVING
+          },
+          (result, status) => {
             if (status === google.maps.DirectionsStatus.OK) {
               // console.log(prevProps.placeIds);
               // console.log(this.props.placeIds);
               this.setState({
-                directions: result,
+                directions: result
               });
             } else {
               console.error(`error fetching directions ${status}`);
             }
-          });
-        }
-      },
-      componentWillUnmount() {
-        this.setState();
+          }
+        );
       }
-    })
-)(props =>
-    <GoogleMap
-        defaultZoom={7}
-        defaultCenter={{lat: 41.85, lng: -87.65}}
-    >
-      {props.directions && <DirectionsRenderer directions={props.directions}/>}
-      {/*<DirectionsRenderer directions={props.directions}/>*/}
-    </GoogleMap>
-);
+    },
+    componentWillUnmount() {
+      this.setState();
+    }
+  })
+)(props => (
+  <GoogleMap defaultZoom={7} defaultCenter={{ lat: 41.85, lng: -87.65 }}>
+    {props.directions && <DirectionsRenderer directions={props.directions} />}
+    {/*<DirectionsRenderer directions={props.directions}/>*/}
+  </GoogleMap>
+));
 
 // Define the helper functions needed by the pending list and selected list
 // Define the style of draggable list
 const grid = 8;
 const getListStyle = isDraggingOver => ({
-  background: isDraggingOver ? 'lightblue' : 'grey',
+  background: isDraggingOver ? "lightblue" : "grey",
   padding: grid,
   width: 250
 });
 
 const getItemStyle = (isDragging, draggableStyle) => ({
   // some basic styles to make the items look a bit nicer
-  userSelect: 'none',
+  userSelect: "none",
   padding: grid * 2,
   margin: `0 0 ${grid}px 0`,
 
   // change background colour if dragging
-  background: isDragging ? 'lightgreen' : 'lightgrey',
+  background: isDragging ? "lightgreen" : "lightgrey",
 
   // styles we need to apply on draggables
   ...draggableStyle
@@ -135,10 +137,7 @@ const move = (source, destination, droppableSource, droppableDestination) => {
   return result;
 };
 
-
 export class Map extends React.Component {
-
-
   constructor(props) {
     super(props);
     this.handleRemove = this.handleRemove.bind(this);
@@ -159,12 +158,11 @@ export class Map extends React.Component {
         place_geos: []
       }
     };
-
   }
-
 
   componentDidUpdate(prevProps) {
     if (prevProps.places !== this.props.places) {
+      console.log(this.props.places);
       this.setState({
         selectedPlaces: this.props.places,
         pendingPlaces: {
@@ -172,20 +170,22 @@ export class Map extends React.Component {
           place_names: [],
           place_geos: []
         }
-      })
+      });
     }
   }
 
   // handleRemove
 
-  handleRemove = () => {
-
-  };
+  handleRemove = () => {};
 
   // handleSave
 
   handleSave = () => {
-    console.log("save");
+    this.props.handleSavePlan(
+      this.state.selectedPlaces.place_ids,
+      this.state.selectedPlaces.place_names,
+      this.state.selectedPlaces.place_geos
+    );
   };
 
   // optimize the route
@@ -193,57 +193,64 @@ export class Map extends React.Component {
   optimizeRouteOrder = () => {
     console.log("optimize");
     const place_geos = this.state.selectedPlaces.place_geos;
-    if (place_geos === null || place_geos === undefined || place_geos.length < 3) {
+    if (
+      place_geos === null ||
+      place_geos === undefined ||
+      place_geos.length < 3
+    ) {
       return;
     }
     // console.log(this.state.selectedGeoInfos);
     // console.log(this.state.selectedAddrs);
-    let minLat = place_geos[0].lat, minLon = place_geos[0].lng;
-    let maxLat = minLat, maxLon = minLon;
+    let minLat = place_geos[0].lat,
+      minLon = place_geos[0].lng;
+    let maxLat = minLat,
+      maxLon = minLon;
 
     for (let i = 1; i < place_geos.length; i++) {
       minLat = Math.min(minLat, place_geos[i].lat);
       minLon = Math.min(minLon, place_geos[i].lng);
       maxLat = Math.max(maxLat, place_geos[i].lat);
       maxLon = Math.max(maxLon, place_geos[i].lng);
-
     }
     // console.log(minLat, maxLon, maxLat, minLon);
     this.getOptimalRouteOrder(minLat, minLon, maxLat, maxLon);
   };
   getOptimalRouteOrder = (minLat, minLon, maxLat, maxLon) => {
-
-
     let directionService = new google.maps.DirectionsService();
 
-    let wayPoints = this.state.selectedPlaces.place_ids.map((placeId) => {
+    let wayPoints = this.state.selectedPlaces.place_ids.map(placeId => {
       return {
-        location: {placeId},
+        location: { placeId },
         stopover: true
       };
     });
 
     // let optimalOrder = [];
     const self = this;
-    directionService.route({
-      origin: new google.maps.LatLng(minLat, minLon),
-      waypoints: wayPoints,
-      destination: new google.maps.LatLng(maxLat, maxLon),
-      travelMode: google.maps.TravelMode.DRIVING,
-      optimizeWaypoints: true
-    }, (result, status) => {
-      if (status === google.maps.DirectionsStatus.OK) {
-        // optimalOrder = result.routes[0].waypoint_order;
-        self.setNewOrder(result.routes[0].waypoint_order);
-      } else {
-        console.error(`error fetching directions ${status}`);
+    directionService.route(
+      {
+        origin: new google.maps.LatLng(minLat, minLon),
+        waypoints: wayPoints,
+        destination: new google.maps.LatLng(maxLat, maxLon),
+        travelMode: google.maps.TravelMode.DRIVING,
+        optimizeWaypoints: true
+      },
+      (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          // optimalOrder = result.routes[0].waypoint_order;
+          self.setNewOrder(result.routes[0].waypoint_order);
+        } else {
+          console.error(`error fetching directions ${status}`);
+        }
       }
-    });
-
+    );
   };
-  setNewOrder = (order) => {
-    console.log(order);
-    let place_ids = [], place_names = [], place_geos = [];
+  setNewOrder = order => {
+    //console.log(order);
+    let place_ids = [],
+      place_names = [],
+      place_geos = [];
     for (let i = 0; i < this.state.selectedPlaces.place_ids.length; i++) {
       place_ids.push("");
       place_names.push("");
@@ -264,12 +271,12 @@ export class Map extends React.Component {
   };
 
   // function to handle draggable lists
-  getList = (id) => {
+  getList = id => {
     return this.state[`${id}Places`];
   };
   onDragEnd = result => {
-    console.log(result);
-    const {source, destination} = result;
+    //console.log(result);
+    const { source, destination } = result;
 
     // dropped outside the list
     if (!destination) {
@@ -280,24 +287,24 @@ export class Map extends React.Component {
       // console.log(this.state.selectedAddrs);
       const places = this.getList(source.droppableId);
       const place_ids = reorder(
-          places.place_ids,
-          source.index,
-          destination.index
+        places.place_ids,
+        source.index,
+        destination.index
       );
 
       const place_names = reorder(
-          places.place_names,
-          source.index,
-          destination.index
+        places.place_names,
+        source.index,
+        destination.index
       );
       const place_geos = reorder(
-          places.place_geos,
-          source.index,
-          destination.index
+        places.place_geos,
+        source.index,
+        destination.index
       );
 
       let state = {};
-      if (source.droppableId === 'selected') {
+      if (source.droppableId === "selected") {
         state = {
           selectedPlaces: {
             place_ids,
@@ -319,25 +326,25 @@ export class Map extends React.Component {
     } else {
       const sourceList = this.getList(source.droppableId);
       const destList = this.getList(destination.droppableId);
-      console.log(destList);
-      console.log(sourceList);
+      // console.log(destList);
+      // console.log(sourceList);
       const place_ids = move(
-          sourceList.place_ids,
-          destList.place_ids,
-          source,
-          destination
+        sourceList.place_ids,
+        destList.place_ids,
+        source,
+        destination
       );
       const place_names = move(
-          sourceList.place_names,
-          destList.place_names,
-          source,
-          destination
+        sourceList.place_names,
+        destList.place_names,
+        source,
+        destination
       );
       const place_geos = move(
-          sourceList.place_geos,
-          destList.place_geos,
-          source,
-          destination
+        sourceList.place_geos,
+        destList.place_geos,
+        source,
+        destination
       );
 
       this.setState({
@@ -357,99 +364,107 @@ export class Map extends React.Component {
 
   render() {
     return (
-        <div className="map-list">
-          <DragDropContext onDragEnd={this.onDragEnd} className="selected-pending-lists">
-            <div className="list">
-              <p>Pending places</p>
-              <Droppable droppableId="pending">
-                {(provided, snapshot) => (
-                    <div
-                        ref={provided.innerRef}
-                        style={getListStyle(snapshot.isDraggingOver)}>
-                      {this.state.pendingPlaces.place_names === undefined ? <p>No places pending</p> :
-                          this.state.pendingPlaces.place_names.map((item, index) => (
-                              <div key={index}>
-                                <Draggable
-                                    key={`pending-${index}`}
-                                    draggableId={`pending-${index}`}
-                                    index={index}>
-                                  {(provided, snapshot) => (
-                                      <div
-                                          ref={provided.innerRef}
-                                          {...provided.draggableProps}
-                                          {...provided.dragHandleProps}
-                                          style={getItemStyle(
-                                              snapshot.isDragging,
-                                              provided.draggableProps.style
-                                          )}
-                                          className='selected-places-list-content'
-                                      >
-                                        {item}
-                                        {/*<Icon type="close-circle" theme="filled" onClick={() => {*/}
-                                        {/*this.handleRemove(index);*/}
-                                        {/*}}/>*/}
-                                      </div>
-                                  )}
-                                </Draggable>
+      <div className="map-list">
+        <DragDropContext
+          onDragEnd={this.onDragEnd}
+          className="selected-pending-lists"
+        >
+          <div className="list">
+            <p>Pending places</p>
+            <Droppable droppableId="pending">
+              {(provided, snapshot) => (
+                <div
+                  ref={provided.innerRef}
+                  style={getListStyle(snapshot.isDraggingOver)}
+                >
+                  {this.state.pendingPlaces.place_names === undefined ? (
+                    <p>No places pending</p>
+                  ) : (
+                    this.state.pendingPlaces.place_names.map((item, index) => (
+                      <div key={index}>
+                        <Draggable
+                          key={`pending-${index}`}
+                          draggableId={`pending-${index}`}
+                          index={index}
+                        >
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              style={getItemStyle(
+                                snapshot.isDragging,
+                                provided.draggableProps.style
+                              )}
+                              className="selected-places-list-content"
+                            >
+                              {item}
+                              {/*<Icon type="close-circle" theme="filled" onClick={() => {*/}
+                              {/*this.handleRemove(index);*/}
+                              {/*}}/>*/}
+                            </div>
+                          )}
+                        </Draggable>
+                      </div>
+                    ))
+                  )}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </div>
+          <div className="list">
+            <p>Selected places</p>
+            <Droppable droppableId="selected">
+              {(provided, snapshot) => (
+                <div
+                  ref={provided.innerRef}
+                  style={getListStyle(snapshot.isDraggingOver)}
+                >
+                  {this.state.selectedPlaces.place_names === undefined ? (
+                    <p>No places selected</p>
+                  ) : (
+                    this.state.selectedPlaces.place_names.map((item, index) => (
+                      <div key={index}>
+                        <Draggable
+                          key={`selected-${index}`}
+                          draggableId={`selected-${index}`}
+                          index={index}
+                        >
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              style={getItemStyle(
+                                snapshot.isDragging,
+                                provided.draggableProps.style
+                              )}
+                              className="selected-places-list-content"
+                            >
+                              {item}
+                              {/*<Icon type="close-circle" theme="filled" onClick={() => {*/}
+                              {/*this.handleRemove(index);*/}
+                              {/*}}/>*/}
+                            </div>
+                          )}
+                        </Draggable>
+                      </div>
+                    ))
+                  )}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+            <button onClick={this.optimizeRouteOrder}>optimize</button>
+            <button onClick={this.handleSave}>Save</button>
+          </div>
+        </DragDropContext>
 
-                              </div>
-
-                          ))}
-                      {provided.placeholder}
-                    </div>
-                )}
-              </Droppable>
-            </div>
-            <div className="list">
-              <p>Selected places</p>
-              <Droppable droppableId="selected">
-                {(provided, snapshot) => (
-                    <div
-                        ref={provided.innerRef}
-                        style={getListStyle(snapshot.isDraggingOver)}>
-                      {this.state.selectedPlaces.place_names === undefined ? <p>No places selected</p> :
-                          this.state.selectedPlaces.place_names.map((item, index) => (
-                              <div key={index}>
-                                <Draggable
-                                    key={`selected-${index}`}
-                                    draggableId={`selected-${index}`}
-                                    index={index}>
-                                  {(provided, snapshot) => (
-                                      <div
-                                          ref={provided.innerRef}
-                                          {...provided.draggableProps}
-                                          {...provided.dragHandleProps}
-                                          style={getItemStyle(
-                                              snapshot.isDragging,
-                                              provided.draggableProps.style
-                                          )}
-                                          className='selected-places-list-content'
-                                      >
-                                        {item}
-                                        {/*<Icon type="close-circle" theme="filled" onClick={() => {*/}
-                                        {/*this.handleRemove(index);*/}
-                                        {/*}}/>*/}
-                                      </div>
-                                  )}
-                                </Draggable>
-
-                              </div>
-
-                          ))}
-                      {provided.placeholder}
-                    </div>
-                )}
-              </Droppable>
-              <button onClick={this.optimizeRouteOrder}>optimize</button>
-              <button onClick={this.handleSave}>Save</button>
-            </div>
-
-          </DragDropContext>
-
-          <MapWithADirectionsRenderer
-              placeIds={this.state.selectedPlaces.place_ids}
-          />
-        </div>
+        <MapWithADirectionsRenderer
+          placeIds={this.state.selectedPlaces.place_ids}
+        />
+      </div>
     );
   }
 }

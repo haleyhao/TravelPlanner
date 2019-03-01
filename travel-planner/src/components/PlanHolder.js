@@ -106,11 +106,15 @@ class PlanHolder extends React.Component {
               </div>
             )}
             <div className="history-map-holder">
-              <History
-                className="history"
-                savedPlan={this.state.savedPlan}
-                handleUpdateMap={this.handleUpdateMap}
-              />
+              {
+                this.state.isClicked &&
+                <History
+                    className="history"
+                    savedPlan={this.state.savedPlan}
+                    handleUpdateMap={this.handleUpdateMap}
+                />
+              }
+
               <div className="map-holder">
                 {this.state.fromHistoryList ? (
                   <Map

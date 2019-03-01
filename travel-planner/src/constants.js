@@ -1,5 +1,4 @@
 export const API_ROOT = "http://18.218.216.17:8080/TravelPlanner";
-export const TOKEN_KEY = "TOKEN_KEY";
 
 // route 1: Manhattan College -> Empire state building -> Columbia University -> Statue of Liberty National Monument
 // route 2: MoMA -> Statue of Liberty National Monument
@@ -35,5 +34,5 @@ export const PLACE_IDS = [
 ];
 
 // Use your own google map API key
-export const MAP_API_KEY = "A";
+export const MAP_API_KEY = "blabla";
 export const MAP_LIBRARIES = "geometry,drawing,places";

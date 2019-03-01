@@ -124,7 +124,7 @@ const reorder = (list, startIndex, endIndex) => {
 // TODO... optimization
 const move = (source, destination, droppableSource, droppableDestination) => {
   const sourceClone = Array.from(source);
-  console.log(destination);
+  // console.log(destination);
   const destClone = Array.from(destination);
   const [removed] = sourceClone.splice(droppableSource.index, 1);
 
@@ -162,7 +162,7 @@ export class Map extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.places !== this.props.places) {
-      console.log(this.props.places);
+      // console.log(this.props.places);
       this.setState({
         selectedPlaces: this.props.places,
         pendingPlaces: {

@@ -1,154 +1,95 @@
-import React from "react";
-import {PLACE_IDS} from "../constants";
+import React from 'react';
+import {API_ROOT} from "../constants";
+import {Loading} from "./Loading";
 import {Plan} from "./Plan";
-import Map from "./Map";
-import '../index.css';
-import {geocodeByPlaceId, getLatLng} from "react-places-autocomplete";
 import {History} from "./History";
+import {Map} from "./Map";
+import { withRouter } from 'react-router-dom';
 
-export class PlanHolder extends React.Component {
-  place_ids_arr = PLACE_IDS;
+class PlanHolder extends React.Component {
+
 
   constructor(props) {
     super(props);
     this.handleMouseHover = this.handleMouseHover.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.handlePlaces = this.handlePlaces.bind(this);
-    this.saveName = this.saveName.bind(this);
-    this.saveGeoInfo = this.saveGeoInfo.bind(this);
     this.state = {
-      isHovering: false,
-      placeIds: [],
-      placeNames: [],
-      placeGeos: [],
       isClicked: false,
+      isLoading: true,
+      plans: [{}, {}, {}],
       hoveredIndex: -1
     };
   }
 
-  // async componentDidMount() {
-  //   setTimeout(this.handlePlaces, 5000);
-  // }
-
-  handlePlaces = () => {
-
-    // console.log(this.state);
-
-    let placeIds = PLACE_IDS.map((PLACE_ID) => {
-      return PLACE_ID.place_ids;
-    });
-
-    let placeNames = [];
-    let placeGeos = [];
-
-    // construct the placeNames and placeGeos
-
-    for (let i = 0; i < placeIds.length; i++) {
-      placeNames = [...placeNames, []];
-      placeGeos = [...placeGeos, []];
-      for (let j = 0; j < placeIds[i].length; j++) {
-        placeNames[i].push('');
-        placeGeos[i].push('');
-      }
-
-    }
-
-
-    for (let i = 0; i < placeIds.length; i++) {
-      for (let j = 0; j < placeIds[i].length; j++) {
-        geocodeByPlaceId(placeIds[i][j])
-            .then((results) => {
-              // console.log(i, j);
-              // console.log(results[0].address_components[0].long_name);
-              placeNames[i][j] = results[0].address_components[0].long_name;
-              // self.saveName(results[0].address_components[0].long_name, i);
-              // console.log(this.placeNames);
-              return getLatLng(results[0]);
-            })
-            .then(({lat, lng}) => {
-                  // console.log('Successfully got latitude and longitude', {lat, lng});
-                  placeGeos[i][j] = {lat, lng};
+  componentDidMount() {
+    // fetch three plans
+    let city = this.props.location.state.city;
+    fetch(`${API_ROOT}/recommend?city=${city}&keyword=hao`)
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          const plans = data.map((plan, index) => {
+            return {
+              place_ids: plan.place_ids,
+              place_names: plan.place_names,
+              place_geos: plan.place_geos.map((place_geo) => {
+                return {
+                  lat: place_geo.lat,
+                  lng: place_geo.lon
                 }
-            )
-            .catch(error => console.error(error));
-
-      }
-
-    }
-
-    this.setState({
-      placeNames,
-      placeGeos,
-      placeIds
-    });
-
-    // console.log(this.state.placeNames);
-
-  };
-
-  saveName = (addr, end) => {
-    // console.log(this.state.placeNames);
-    // console.log(addr);
-    // console.log(this.state.placeNames);
-    // console.log(this);
-    this.placeNames = [...this.placeNames.slice(0, end), [...this.placeNames[end], addr]];
-    // console.log(this.placeNames);
-  };
-
-  saveGeoInfo = (geoInfo, end) => {
-    // console.log(this.state);
-    this.setState((prevState) => ({
-      geoInfos: [...prevState.geoInfos.slice(0, end), [...prevState.geoInfos[end], geoInfo]]
-    }));
-    // console.log(this.state.geoInfos);
-  };
+              })
+            }
+          });
+          this.setState({
+            isLoading: false,
+            plans
+          });
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+  }
 
   handleMouseHover(index) {
-    if (this.state.isClicked) {
-      return;
-    }
-    this.setState((prevState) => {
-      return {
-        isHovering: !prevState.isHovering,
-        hoveredIndex: index
-      }
-    });
+    this.setState({hoveredIndex: index});
   }
 
-  handleClick() {
-    // console.log('handleCLick');
+  handleClick = () => {
     this.setState({isClicked: true});
-  }
-
+  };
 
   render() {
-
     return (
         <div>
           {
-            !this.state.isClicked &&
-            <div className='plan-holder'>
-              {this.place_ids_arr.map((place_ids, index) => {
-                return <Plan key={index} place_ids={place_ids} index={index}
-                             handleMouseHover={this.handleMouseHover} handleClick={this.handleClick}/>
-              })}
+            this.state.isLoading ? <Loading text="Fetching three suggested plans...."/> :
+                <div>
+                  {
+                    !this.state.isClicked &&
+                    <div className='plan-holder'>
+                      {this.state.plans.map((plan, index) => {
+                        return <Plan key={index} place_ids={plan.place_ids} index={index}
+                                     handleMouseHover={this.handleMouseHover}
+                                     handleClick={this.handleClick}/>
+                      })}
 
-            </div>
+                    </div>
+
+                  }
+                  <div className="history-map-holder">
+                    {/*<History className="history"/>*/}
+                    <div className='map-holder'>
+                      <Map places={this.state.hoveredIndex > -1 ? this.state.plans[this.state.hoveredIndex] : {}} />
+                    </div>
+                  </div>
+                </div>
+
           }
-          <div className="history-map-holder">
-            <History className="history"/>
-            {/*<button>Save</button>*/}
-            <div className='map-holder'>
-              <Map placeIds={this.state.hoveredIndex > -1 ? this.state.placeIds[this.state.hoveredIndex] : []}
-                   placeNames={this.state.hoveredIndex > -1 ? this.state.placeNames[this.state.hoveredIndex] : []}
-                   placeGeos={this.state.hoveredIndex > -1 ? this.state.placeGeos[this.state.hoveredIndex] : []}
-                   handlePlaces={this.handlePlaces}
-              />
-            </div>
-          </div>
-
-
         </div>
     );
   }
+
 }
+
+export default withRouter(PlanHolder);

@@ -15,10 +15,11 @@ class RegistrationForm extends React.Component {
             if (!err) {
                 console.log('Received values of form: ', values);
                 // send request
-                fetch(`${API_ROOT}/signup`, {
+                fetch(`${API_ROOT}/register`, {
                     method: 'POST',
                     body: JSON.stringify({
-                        username: values.username,
+                        user_id: values.email,
+                        name: values.name,
                         password: values.password,
                     }),
                 }).then((response) => {
@@ -52,7 +53,7 @@ class RegistrationForm extends React.Component {
         } else {
             callback();
         }
-    }
+    };
 
     validateToNextPassword = (rule, value, callback) => {
         const form = this.props.form;
@@ -60,7 +61,7 @@ class RegistrationForm extends React.Component {
             form.validateFields(['confirm'], { force: true });
         }
         callback();
-    }
+    };
 
     render() {
         const { getFieldDecorator } = this.props.form;
@@ -92,10 +93,20 @@ class RegistrationForm extends React.Component {
             <Form onSubmit={this.handleSubmit} className="register">
                 <Form.Item
                     {...formItemLayout}
-                    label="Username"
+                    label="Email"
                 >
-                    {getFieldDecorator('username', {
-                        rules: [{ required: true, message: 'Please input your username!' }],
+                    {getFieldDecorator('email', {
+                        rules: [{ required: true, message: 'Please input your email!' }],
+                    })(
+                        <Input />
+                    )}
+                </Form.Item>
+                <Form.Item
+                    {...formItemLayout}
+                    label="Name"
+                >
+                    {getFieldDecorator('name', {
+                        rules: [{ required: true, message: 'Please input your name!' }],
                     })(
                         <Input />
                     )}

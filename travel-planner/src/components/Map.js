@@ -1,4 +1,4 @@
-import React from "react"
+import React from 'react';
 import {MAP_API_KEY, MAP_LIBRARIES} from "../constants";
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 import {Icon} from "antd";
@@ -10,55 +10,9 @@ const {
   GoogleMap,
   DirectionsRenderer,
 } = require("react-google-maps");
-
-
 /*global google*/
 
-
-const reorder = (list, startIndex, endIndex) => {
-  const result = Array.from(list);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-
-  return result;
-};
-
-/**
- * Moves an item from one list to another list.
- */
-const move = (source, destination, droppableSource, droppableDestination) => {
-  const sourceClone = Array.from(source);
-  const destClone = Array.from(destination);
-  const [removed] = sourceClone.splice(droppableSource.index, 1);
-
-  destClone.splice(droppableDestination.index, 0, removed);
-
-  const result = {};
-  result[droppableSource.droppableId] = sourceClone;
-  result[droppableDestination.droppableId] = destClone;
-
-  return result;
-};
-const grid = 8;
-const getListStyle = isDraggingOver => ({
-  background: isDraggingOver ? 'lightblue' : 'grey',
-  padding: grid,
-  width: 250
-});
-
-const getItemStyle = (isDragging, draggableStyle) => ({
-  // some basic styles to make the items look a bit nicer
-  userSelect: 'none',
-  padding: grid * 2,
-  margin: `0 0 ${grid}px 0`,
-
-  // change background colour if dragging
-  background: isDragging ? 'lightgreen' : 'lightgrey',
-
-  // styles we need to apply on draggables
-  ...draggableStyle
-});
-
+// Define the map area
 const MapWithADirectionsRenderer = compose(
     withProps({
       googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${MAP_API_KEY}&v=3.exp&libraries=${MAP_LIBRARIES}`,
@@ -73,7 +27,6 @@ const MapWithADirectionsRenderer = compose(
         this.setState({
           directionService: new google.maps.DirectionsService(),
         });
-        this.props.handlePlaces();
       },
       componentDidUpdate(prevProps, prevState) {
         // console.log(this.state);
@@ -131,50 +84,139 @@ const MapWithADirectionsRenderer = compose(
     </GoogleMap>
 );
 
-class Map extends React.PureComponent {
+// Define the helper functions needed by the pending list and selected list
+// Define the style of draggable list
+const grid = 8;
+const getListStyle = isDraggingOver => ({
+  background: isDraggingOver ? 'lightblue' : 'grey',
+  padding: grid,
+  width: 250
+});
 
-  // constructor(props) {
-  //   super(props);
-  // }
-  // componentDidMount () {
-  //   this.mapInstance = map.context[MAP]
-  // }
+const getItemStyle = (isDragging, draggableStyle) => ({
+  // some basic styles to make the items look a bit nicer
+  userSelect: 'none',
+  padding: grid * 2,
+  margin: `0 0 ${grid}px 0`,
 
-  state = {
-    selectedPlaceIds: [],
-    selectedAddrs: [],
-    selectedGeoInfos: []
-  };
+  // change background colour if dragging
+  background: isDragging ? 'lightgreen' : 'lightgrey',
+
+  // styles we need to apply on draggables
+  ...draggableStyle
+});
+
+// TODO... optimization (choice of array of obj or obj of array)
+const reorder = (list, startIndex, endIndex) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
+
+/**
+ * Moves an item from one list to another list.
+ */
+
+// TODO... optimization
+const move = (source, destination, droppableSource, droppableDestination) => {
+  const sourceClone = Array.from(source);
+  console.log(destination);
+  const destClone = Array.from(destination);
+  const [removed] = sourceClone.splice(droppableSource.index, 1);
+
+  destClone.splice(droppableDestination.index, 0, removed);
+
+  const result = {};
+  result[droppableSource.droppableId] = sourceClone;
+  result[droppableDestination.droppableId] = destClone;
+
+  return result;
+};
+
+
+export class Map extends React.Component {
+
+
+  constructor(props) {
+    super(props);
+    this.handleRemove = this.handleRemove.bind(this);
+    this.handleSave = this.handleSave.bind(this);
+    this.optimizeRouteOrder = this.optimizeRouteOrder.bind(this);
+    this.getOptimalRouteOrder = this.getOptimalRouteOrder.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this);
+    this.setNewOrder = this.setNewOrder.bind(this);
+    this.state = {
+      selectedPlaces: {
+        place_ids: [],
+        place_names: [],
+        place_geos: []
+      },
+      pendingPlaces: {
+        place_ids: [],
+        place_names: [],
+        place_geos: []
+      }
+    };
+
+  }
+
 
   componentDidUpdate(prevProps) {
-
-    if (prevProps.placeIds !== this.props.placeIds) {
-
+    if (prevProps.places !== this.props.places) {
       this.setState({
-        selectedPlaceIds: this.props.placeIds,
-        selectedAddrs: this.props.placeNames,
-        selectedGeoInfos: this.props.placeGeos
-      });
-
+        selectedPlaces: this.props.places,
+        pendingPlaces: {
+          place_ids: [],
+          place_names: [],
+          place_geos: []
+        }
+      })
     }
   }
 
-  handleRemove = (index) => {
-    this.setState((prevState) => ({
-      selectedPlaceIds: [...prevState.selectedPlaceIds.slice(0, index), ...prevState.selectedPlaceIds.slice(index + 1)],
-      selectedAddrs: [...prevState.selectedAddrs.slice(0, index), ...prevState.selectedAddrs.slice(index + 1)],
-      selectedGeoInfos: [...prevState.selectedGeoInfos.slice(0, index), ...prevState.selectedGeoInfos.slice(index + 1)],
+  // handleRemove
 
-    }));
+  handleRemove = () => {
+
   };
 
+  // handleSave
 
+  handleSave = () => {
+    console.log("save");
+  };
+
+  // optimize the route
+
+  optimizeRouteOrder = () => {
+    console.log("optimize");
+    const place_geos = this.state.selectedPlaces.place_geos;
+    if (place_geos === null || place_geos === undefined || place_geos.length < 3) {
+      return;
+    }
+    // console.log(this.state.selectedGeoInfos);
+    // console.log(this.state.selectedAddrs);
+    let minLat = place_geos[0].lat, minLon = place_geos[0].lng;
+    let maxLat = minLat, maxLon = minLon;
+
+    for (let i = 1; i < place_geos.length; i++) {
+      minLat = Math.min(minLat, place_geos[i].lat);
+      minLon = Math.min(minLon, place_geos[i].lng);
+      maxLat = Math.max(maxLat, place_geos[i].lat);
+      maxLon = Math.max(maxLon, place_geos[i].lng);
+
+    }
+    // console.log(minLat, maxLon, maxLat, minLon);
+    this.getOptimalRouteOrder(minLat, minLon, maxLat, maxLon);
+  };
   getOptimalRouteOrder = (minLat, minLon, maxLat, maxLon) => {
 
 
     let directionService = new google.maps.DirectionsService();
 
-    let wayPoints = this.state.selectedPlaceIds.map((placeId) => {
+    let wayPoints = this.state.selectedPlaces.place_ids.map((placeId) => {
       return {
         location: {placeId},
         stopover: true
@@ -199,58 +241,34 @@ class Map extends React.PureComponent {
     });
 
   };
-
   setNewOrder = (order) => {
     console.log(order);
-    let selectedPlaceIds = [], selectedAddrs = [], selectedGeoInfos = [];
-    for (let i = 0; i < this.state.selectedPlaceIds.length; i++) {
-      selectedPlaceIds.push("");
-      selectedAddrs.push("");
-      selectedGeoInfos.push("");
+    let place_ids = [], place_names = [], place_geos = [];
+    for (let i = 0; i < this.state.selectedPlaces.place_ids.length; i++) {
+      place_ids.push("");
+      place_names.push("");
+      place_geos.push("");
     }
     for (let i = 0; i < order.length; i++) {
-      selectedPlaceIds[i] = this.state.selectedPlaceIds[order[i]];
-      selectedAddrs[i] = this.state.selectedAddrs[order[i]];
-      selectedGeoInfos[i] = this.state.selectedGeoInfos[order[i]];
+      place_ids[i] = this.state.selectedPlaces.place_ids[order[i]];
+      place_names[i] = this.state.selectedPlaces.place_names[order[i]];
+      place_geos[i] = this.state.selectedPlaces.place_geos[order[i]];
     }
-    // console.log(selectedAddrs);
     this.setState({
-      selectedPlaceIds,
-      selectedAddrs,
-      selectedGeoInfos
+      selectedPlaces: {
+        place_ids,
+        place_names,
+        place_geos
+      }
     });
   };
 
-  id2List = {
-    droppable: 'items',
-    selected: 'selectedAddrs'
+  // function to handle draggable lists
+  getList = (id) => {
+    return this.state[`${id}Places`];
   };
-
-  optimizeRouteOrder = () => {
-
-    if (this.state.selectedGeoInfos === null || this.state.selectedGeoInfos === undefined || this.state.selectedGeoInfos.length < 3) {
-      return;
-    }
-    // console.log(this.state.selectedGeoInfos);
-    // console.log(this.state.selectedAddrs);
-    let minLat = this.state.selectedGeoInfos[0].lat, minLon = this.state.selectedGeoInfos[0].lng;
-    let maxLat = minLat, maxLon = minLon;
-
-    for (let i = 1; i < this.state.selectedGeoInfos.length; i++) {
-      minLat = Math.min(minLat, this.state.selectedGeoInfos[i].lat);
-      minLon = Math.min(minLon, this.state.selectedGeoInfos[i].lng);
-      maxLat = Math.max(maxLat, this.state.selectedGeoInfos[i].lat);
-      maxLon = Math.max(maxLon, this.state.selectedGeoInfos[i].lng);
-
-    }
-    // console.log(minLat, maxLon, maxLat, minLon);
-    this.getOptimalRouteOrder(minLat, minLon, maxLat, maxLon);
-
-  };
-
-  getList = id => this.state[this.id2List[id]];
-
   onDragEnd = result => {
+    console.log(result);
     const {source, destination} = result;
 
     // dropped outside the list
@@ -260,49 +278,79 @@ class Map extends React.PureComponent {
 
     if (source.droppableId === destination.droppableId) {
       // console.log(this.state.selectedAddrs);
-      const reorderedAddrs = reorder(
-          this.getList(source.droppableId),
+      const places = this.getList(source.droppableId);
+      const place_ids = reorder(
+          places.place_ids,
           source.index,
           destination.index
       );
 
-      const reorderedPlaceIds = reorder(
-          this.state.selectedPlaceIds,
+      const place_names = reorder(
+          places.place_names,
           source.index,
           destination.index
       );
-      const reorderedGeoInfos = reorder(
-          this.state.selectedGeoInfos,
+      const place_geos = reorder(
+          places.place_geos,
           source.index,
           destination.index
       );
 
       let state = {};
-      // console.log(reorderedAddrs);
-
       if (source.droppableId === 'selected') {
         state = {
-          selectedAddrs: reorderedAddrs,
-
-          selectedPlaceIds: reorderedPlaceIds,
-
-          selectedGeoInfos: reorderedGeoInfos
-
+          selectedPlaces: {
+            place_ids,
+            place_names,
+            place_geos
+          }
+        };
+      } else {
+        state = {
+          pendingPlaces: {
+            place_ids,
+            place_names,
+            place_geos
+          }
         };
       }
-
+      // console.log(state);
       this.setState(state);
     } else {
-      const result = move(
-          this.getList(source.droppableId),
-          this.getList(destination.droppableId),
+      const sourceList = this.getList(source.droppableId);
+      const destList = this.getList(destination.droppableId);
+      console.log(destList);
+      console.log(sourceList);
+      const place_ids = move(
+          sourceList.place_ids,
+          destList.place_ids,
+          source,
+          destination
+      );
+      const place_names = move(
+          sourceList.place_names,
+          destList.place_names,
+          source,
+          destination
+      );
+      const place_geos = move(
+          sourceList.place_geos,
+          destList.place_geos,
           source,
           destination
       );
 
       this.setState({
-        items: result.droppable,
-        selected: result.droppable2
+        pendingPlaces: {
+          place_ids: place_ids.pending,
+          place_names: place_names.pending,
+          place_geos: place_geos.pending
+        },
+        selectedPlaces: {
+          place_ids: place_ids.selected,
+          place_names: place_names.selected,
+          place_geos: place_geos.selected
+        }
       });
     }
   };
@@ -310,20 +358,20 @@ class Map extends React.PureComponent {
   render() {
     return (
         <div className="map-list">
-          <div className='selected-places-list'>
-            <p>Selected places</p>
-            <DragDropContext onDragEnd={this.onDragEnd}>
-              <Droppable droppableId="selected">
+          <DragDropContext onDragEnd={this.onDragEnd} className="selected-pending-lists">
+            <div className="list">
+              <p>Pending places</p>
+              <Droppable droppableId="pending">
                 {(provided, snapshot) => (
                     <div
                         ref={provided.innerRef}
                         style={getListStyle(snapshot.isDraggingOver)}>
-                      {this.state.selectedAddrs === undefined ? null :
-                          this.state.selectedAddrs.map((item, index) => (
+                      {this.state.pendingPlaces.place_names === undefined ? <p>No places pending</p> :
+                          this.state.pendingPlaces.place_names.map((item, index) => (
                               <div key={index}>
                                 <Draggable
-                                    key={`drag-${index}`}
-                                    draggableId={`${index}`}
+                                    key={`pending-${index}`}
+                                    draggableId={`pending-${index}`}
                                     index={index}>
                                   {(provided, snapshot) => (
                                       <div
@@ -337,9 +385,9 @@ class Map extends React.PureComponent {
                                           className='selected-places-list-content'
                                       >
                                         {item}
-                                        <Icon type="close-circle" theme="filled" onClick={() => {
-                                          this.handleRemove(index);
-                                        }}/>
+                                        {/*<Icon type="close-circle" theme="filled" onClick={() => {*/}
+                                        {/*this.handleRemove(index);*/}
+                                        {/*}}/>*/}
                                       </div>
                                   )}
                                 </Draggable>
@@ -351,19 +399,57 @@ class Map extends React.PureComponent {
                     </div>
                 )}
               </Droppable>
-            </DragDropContext>
+            </div>
+            <div className="list">
+              <p>Selected places</p>
+              <Droppable droppableId="selected">
+                {(provided, snapshot) => (
+                    <div
+                        ref={provided.innerRef}
+                        style={getListStyle(snapshot.isDraggingOver)}>
+                      {this.state.selectedPlaces.place_names === undefined ? <p>No places selected</p> :
+                          this.state.selectedPlaces.place_names.map((item, index) => (
+                              <div key={index}>
+                                <Draggable
+                                    key={`selected-${index}`}
+                                    draggableId={`selected-${index}`}
+                                    index={index}>
+                                  {(provided, snapshot) => (
+                                      <div
+                                          ref={provided.innerRef}
+                                          {...provided.draggableProps}
+                                          {...provided.dragHandleProps}
+                                          style={getItemStyle(
+                                              snapshot.isDragging,
+                                              provided.draggableProps.style
+                                          )}
+                                          className='selected-places-list-content'
+                                      >
+                                        {item}
+                                        {/*<Icon type="close-circle" theme="filled" onClick={() => {*/}
+                                        {/*this.handleRemove(index);*/}
+                                        {/*}}/>*/}
+                                      </div>
+                                  )}
+                                </Draggable>
 
+                              </div>
 
-            <button onClick={this.optimizeRouteOrder}>optimize</button>
-            <button>Save</button>
-          </div>
+                          ))}
+                      {provided.placeholder}
+                    </div>
+                )}
+              </Droppable>
+              <button onClick={this.optimizeRouteOrder}>optimize</button>
+              <button onClick={this.handleSave}>Save</button>
+            </div>
+
+          </DragDropContext>
+
           <MapWithADirectionsRenderer
-              placeIds={this.state.selectedPlaceIds}
-              handlePlaces={this.props.handlePlaces}
+              placeIds={this.state.selectedPlaces.place_ids}
           />
         </div>
     );
   }
 }
-
-export default Map;

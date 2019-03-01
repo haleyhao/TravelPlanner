@@ -3,6 +3,8 @@ import { Form, Icon, Input, Button, message } from 'antd';
 import { API_ROOT } from '../constants';
 import { Link } from 'react-router-dom';
 
+
+
 class NormalLoginForm extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault();
@@ -12,25 +14,25 @@ class NormalLoginForm extends React.Component {
                 fetch(`${API_ROOT}/login`, {
                     method: 'POST',
                     body: JSON.stringify({
-                        username: values.username,
+                        user_id: values.username,
                         password: values.password,
                     }),
                 }).then((response) => {
                     if (response.ok) {
+                        // console.log(response.headers.get('Set-Cookie'));
                         return response.text();
                     }
                     throw new Error(response.statusText);
                 }).then((data) => {
                     message.success('Login Success!');
-                    console.log(data);
-                    this.props.handleSuccessfulLogin(data);
+                    this.props.handleSuccessfulLogin(JSON.parse(data.toString()));
                 }).catch((e) => {
                     console.log(e);
                     message.error('Login Failed.');
                 });
             }
         });
-    }
+    };
 
     render() {
         const { getFieldDecorator } = this.props.form;

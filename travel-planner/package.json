@@ -5,6 +5,7 @@
   "dependencies": {
     "antd": "^3.13.2",
     "google": "^2.1.0",
+    "prop-types": "^15.7.2",
     "react": "^16.8.1",
     "react-beautiful-dnd": "^10.0.4",
     "react-dom": "^16.8.1",
@@ -13,6 +14,7 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.4",
     "react-sortable-hoc": "^1.6.1",
+    "react-spinner-material": "^1.0.19",
     "recompose": "^0.30.0"
   },
   "scripts": {

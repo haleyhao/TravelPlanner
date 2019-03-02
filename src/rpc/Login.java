@@ -151,6 +151,7 @@ public class Login extends HttpServlet {
 				session.setAttribute("user_id", user_id);
 				session.setMaxInactiveInterval(600); //time out
 				returnObj.put("status", "OK").put("user_id", user_id).put("name", conn.getFullname(user_id));
+				conn.updateUserLogs(user_id, "Log in");
 				
 			} else {
 				response.setStatus(401); // No such user

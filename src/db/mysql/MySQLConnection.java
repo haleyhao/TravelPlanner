@@ -153,7 +153,47 @@ public class MySQLConnection implements DBConnection{
    				}
    		 }
     }
+    @Override
+    public void updateUserLogs(String userId, String event) {
+    	if (connection == null) {
+			System.err.println("DB connection failed");
+			return;
+		}
+		try {
+			String sql = "INSERT INTO userlogs VALUES(?, ?, ?)";
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ps.setString(1, "NOW()");
+			ps.setString(2, userId);
+			ps.setString(3, event);
+			ps.execute();
+			return;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    @Override
+    public List<String> getUserLogs(String userId) {
+    	List<String> result = new ArrayList<>();
+    	if (connection == null) {
+			return result;
+		}
+		
+		try {
+			String sql = "SELECT date FROM userlogs WHERE user_id = ?";
+			PreparedStatement statement = connection.prepareStatement(sql);
+			statement.setString(1, userId);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				String log = rs.getString("date") + rs.getString("event");
+				result.add(log);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
 
+		return result;
+    }
 	@Override
 	public Set<String> getCitys(String itemId) {
 		if (connection == null) {

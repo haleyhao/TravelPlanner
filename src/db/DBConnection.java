@@ -60,5 +60,10 @@ public interface DBConnection {
 	public void savePlaces(List<Place> placeList);
 	
 	public List<Place> getAllPlaces(String city);
+	
+	public List<String> getUserLogs(String userId);
+	
+	public void updateUserLogs(String userId, String event);
+	
 >>>>>>> branch 'backend' of https://github.com/haleyhao/TravelPlanner.git
 }

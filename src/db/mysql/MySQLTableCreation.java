@@ -59,6 +59,8 @@ public class MySQLTableCreation {
 		//create a new table to store place information
 		createPlaceTable();
 		
+		createUserLogTable();
+		
 		try {
 			// Step 1 Connect to MySQL.
 			System.out.println("Connecting to " + MySQLDBUtil.URL);
@@ -127,6 +129,38 @@ public class MySQLTableCreation {
 			
 			System.out.println("Plan Import done successfully");
 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void createUserLogTable() {
+		try {
+			
+			// Step 1 Connect to MySQL.
+			System.out.println("Connecting to " + MySQLDBUtil.URL);
+			Class.forName("com.mysql.cj.jdbc.Driver").getConstructor().newInstance();
+			Connection conn = DriverManager.getConnection(MySQLDBUtil.URL);
+			
+			if (conn == null) {
+				return;
+			}
+			
+			// Step 2 Drop table users in case it exists.
+			Statement statement = conn.createStatement();
+			String sql = "DROP TABLE IF EXISTS userlogs";
+			statement.executeUpdate(sql);
+			
+			// Step 3 Create table users
+			sql = "CREATE TABLE userlogs ("
+					+ "date TIMESTAMP NOT NULL,"
+					+ "user_id VARCHAR(255) NOT NULL,"
+					+ "event VARCHAR(255) NOT NULL,"
+					+ "PRIMARY KEY (date)"
+					+ ")";
+			statement.executeUpdate(sql);
+			
+			System.out.println("userlogs Import done successfully");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

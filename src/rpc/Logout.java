@@ -72,10 +72,12 @@ public class Logout extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
 		JSONObject returnObj = new JSONObject();
+		DBConnection conn = DBConnectionFactory.getConnection();
 		try {
 			if (session != null) {
 				session.invalidate();
 				returnObj.put("status", "Logout SUCCESS");
+				conn.updateUserLogs(user_id, "Log out");
 			} else {
 				returnObj.put("status", "Not logged in");
 			}

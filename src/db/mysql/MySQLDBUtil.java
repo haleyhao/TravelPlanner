@@ -3,7 +3,11 @@ package db.mysql;
 public class MySQLDBUtil {
 	private static final String HOSTNAME = "localhost";
 	private static final String PORT_NUM = "3306"; // change it to your mysql port number
+<<<<<<< HEAD
 	public static final String DB_NAME = "flagcamp";
+=======
+	public static final String DB_NAME = "travel_planner";
+>>>>>>> branch 'backend' of https://github.com/haleyhao/TravelPlanner.git
 	private static final String USERNAME = "root";
 	private static final String PASSWORD = "root";
 	public static final String URL = "jdbc:mysql://"

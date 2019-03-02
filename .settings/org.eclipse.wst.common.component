@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+<<<<<<< HEAD
     <wb-module deploy-name="FlagCamp">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
         <property name="context-root" value="FlagCamp"/>
         <property name="java-output-path" value="/FlagCamp/build/classes"/>
+=======
+    <wb-module deploy-name="TravelPlanner">
+        <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <property name="context-root" value="TravelPlanner"/>
+        <property name="java-output-path" value="/TravelPlanner/build/classes"/>
+>>>>>>> branch 'backend' of https://github.com/haleyhao/TravelPlanner.git
     </wb-module>
 </project-modules>

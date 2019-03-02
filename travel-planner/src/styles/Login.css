@@ -1,13 +1,17 @@
 .login-form {
-    width: 300px;
+    width: 350px;
     margin-left: auto;
     margin-right: auto;
-    background-color: rgba(149, 193, 241, 0);
+    background-color: rgba(245, 245, 245, 0.5);
     background-size: 100%;
     background-repeat:no-repeat;
+
 }
 
 .login-form-button {
     width: 100%;
-    color: #00474f;
+    background-color: rgba(0, 71, 79, 0.85);
+    /*font-size: 15px*/
+
 }
+

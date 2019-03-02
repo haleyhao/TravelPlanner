@@ -34,5 +34,5 @@ export const PLACE_IDS = [
 ];
 
 // Use your own google map API key
-export const MAP_API_KEY = "blabla";
+export const MAP_API_KEY = "bla";
 export const MAP_LIBRARIES = "geometry,drawing,places";

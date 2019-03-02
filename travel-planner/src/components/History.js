@@ -139,14 +139,18 @@ export class History extends Component {
         for (let i = index; i < newPlans.length; i++) {
             newPlans[i].index -= 1;
         }
-
+        let selected = this.state.selectedPlan;
+        if (index === selected) {
+            selected = newPlans.length === 0 ? -1 : 0;
+            if (selected === 0) {
+                this.props.handleUpdateMap(newPlans[selected]);
+            }
+        }
         this.setState({
             plans: newPlans,
-            selectedPlan: newPlans.length > -1 ? 0 : -1
+            selectedPlan: selected
         });
-        if (newPlans.length > 0) {
-            this.updateMap(0);
-        }
+
         this.deletePlan(index);
 
     };

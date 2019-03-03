@@ -490,93 +490,99 @@ export class Map extends React.Component {
                                 onDragEnd={this.onDragEnd}
                                 className="selected-pending-lists"
                             >
-                                <div className="list">
+                                <div>
                                     <p>Pending places</p>
-                                    <Droppable droppableId="pending">
-                                        {(provided, snapshot) => (
-                                            <div
-                                                ref={provided.innerRef}
-                                                style={getListStyle(snapshot.isDraggingOver)}
-                                            >
-                                                {this.state.pendingPlaces.place_names === undefined ? (
-                                                    <p>No places pending</p>
-                                                ) : (
-                                                    this.state.pendingPlaces.place_names.map((item, index) => (
-                                                        <div key={index}>
-                                                            <Draggable
-                                                                key={`pending-${index}`}
-                                                                draggableId={`pending-${index}`}
-                                                                index={index}
-                                                            >
-                                                                {(provided, snapshot) => (
-                                                                    <div
-                                                                        ref={provided.innerRef}
-                                                                        {...provided.draggableProps}
-                                                                        {...provided.dragHandleProps}
-                                                                        style={getItemStyle(
-                                                                            snapshot.isDragging,
-                                                                            provided.draggableProps.style
-                                                                        )}
-                                                                        className="selected-places-list-content"
-                                                                    >
-                                                                        {item}
-                                                                        {/*<Icon type="close-circle" theme="filled" onClick={() => {*/}
-                                                                        {/*this.handleRemove(index);*/}
-                                                                        {/*}}/>*/}
-                                                                    </div>
-                                                                )}
-                                                            </Draggable>
-                                                        </div>
-                                                    ))
-                                                )}
-                                                {provided.placeholder}
-                                            </div>
-                                        )}
-                                    </Droppable>
+                                    <div className="drop-scroll">
+                                        <Droppable droppableId="pending" >
+                                            {(provided, snapshot) => (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    style={getListStyle(snapshot.isDraggingOver)}
+                                                >
+                                                    {this.state.pendingPlaces.place_names === undefined ? (
+                                                        <p>No places pending</p>
+                                                    ) : (
+                                                        this.state.pendingPlaces.place_names.map((item, index) => (
+                                                            <div key={index}>
+                                                                <Draggable
+                                                                    key={`pending-${index}`}
+                                                                    draggableId={`pending-${index}`}
+                                                                    index={index}
+                                                                >
+                                                                    {(provided, snapshot) => (
+                                                                        <div
+                                                                            ref={provided.innerRef}
+                                                                            {...provided.draggableProps}
+                                                                            {...provided.dragHandleProps}
+                                                                            style={getItemStyle(
+                                                                                snapshot.isDragging,
+                                                                                provided.draggableProps.style
+                                                                            )}
+                                                                            className="selected-places-list-content"
+                                                                        >
+                                                                            {item}
+                                                                            {/*<Icon type="close-circle" theme="filled" onClick={() => {*/}
+                                                                            {/*this.handleRemove(index);*/}
+                                                                            {/*}}/>*/}
+                                                                        </div>
+                                                                    )}
+                                                                </Draggable>
+                                                            </div>
+                                                        ))
+                                                    )}
+                                                    {provided.placeholder}
+                                                </div>
+                                            )}
+                                        </Droppable>
+                                    </div>
+
                                 </div>
                                 <div className="list">
                                     <p>Selected places</p>
-                                    <Droppable droppableId="selected">
-                                        {(provided, snapshot) => (
-                                            <div
-                                                ref={provided.innerRef}
-                                                style={getListStyle(snapshot.isDraggingOver)}
-                                            >
-                                                {this.state.selectedPlaces.place_names === undefined ? (
-                                                    <p>No places selected</p>
-                                                ) : (
-                                                    this.state.selectedPlaces.place_names.map((item, index) => (
-                                                        <div key={index}>
-                                                            <Draggable
-                                                                key={`selected-${index}`}
-                                                                draggableId={`selected-${index}`}
-                                                                index={index}
-                                                            >
-                                                                {(provided, snapshot) => (
-                                                                    <div
-                                                                        ref={provided.innerRef}
-                                                                        {...provided.draggableProps}
-                                                                        {...provided.dragHandleProps}
-                                                                        style={getItemStyle(
-                                                                            snapshot.isDragging,
-                                                                            provided.draggableProps.style
-                                                                        )}
-                                                                        className="selected-places-list-content"
-                                                                    >
-                                                                        {item}
-                                                                        {/*<Icon type="close-circle" theme="filled" onClick={() => {*/}
-                                                                        {/*this.handleRemove(index);*/}
-                                                                        {/*}}/>*/}
-                                                                    </div>
-                                                                )}
-                                                            </Draggable>
-                                                        </div>
-                                                    ))
-                                                )}
-                                                {provided.placeholder}
-                                            </div>
-                                        )}
-                                    </Droppable>
+                                    <div className="drop-scroll">
+                                        <Droppable droppableId="selected">
+                                            {(provided, snapshot) => (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    style={getListStyle(snapshot.isDraggingOver)}
+                                                >
+                                                    {this.state.selectedPlaces.place_names === undefined ? (
+                                                        <p>No places selected</p>
+                                                    ) : (
+                                                        this.state.selectedPlaces.place_names.map((item, index) => (
+                                                            <div key={index}>
+                                                                <Draggable
+                                                                    key={`selected-${index}`}
+                                                                    draggableId={`selected-${index}`}
+                                                                    index={index}
+                                                                >
+                                                                    {(provided, snapshot) => (
+                                                                        <div
+                                                                            ref={provided.innerRef}
+                                                                            {...provided.draggableProps}
+                                                                            {...provided.dragHandleProps}
+                                                                            style={getItemStyle(
+                                                                                snapshot.isDragging,
+                                                                                provided.draggableProps.style
+                                                                            )}
+                                                                            className="selected-places-list-content"
+                                                                        >
+                                                                            {item}
+                                                                            {/*<Icon type="close-circle" theme="filled" onClick={() => {*/}
+                                                                            {/*this.handleRemove(index);*/}
+                                                                            {/*}}/>*/}
+                                                                        </div>
+                                                                    )}
+                                                                </Draggable>
+                                                            </div>
+                                                        ))
+                                                    )}
+                                                    {provided.placeholder}
+                                                </div>
+                                            )}
+                                        </Droppable>
+                                    </div>
+
                                     <button onClick={this.optimizeRouteOrder}>optimize</button>
                                     <button onClick={this.handleSave}>Save</button>
                                 </div>

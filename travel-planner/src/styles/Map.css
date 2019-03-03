@@ -23,3 +23,7 @@
     font-size: 16px;
     color: black;
 }
+.drop-scroll {
+    overflow: scroll;
+    height: 440px;
+}

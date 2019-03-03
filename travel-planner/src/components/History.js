@@ -40,6 +40,7 @@ export class History extends Component {
             });
     }
 
+
     componentDidUpdate(nextProps) {
         if (this.props.savedPlan !== nextProps.savedPlan) {
             this.handlePressSave();
@@ -102,6 +103,7 @@ export class History extends Component {
                 console.log(e);
                 message.error("Save failed.");
             });
+
 
         console.log("Plan Saved");
     };
@@ -198,6 +200,7 @@ class HistoryItem extends Component {
                 <List.Item
                     onClick={this.updateMap}
                 >
+
                     <h1 style={{fontSize: 14, color:'#1062a8',fontWeight:700}}>Plan {this.props.plan.index}</h1>
 
                 </List.Item>
@@ -207,3 +210,4 @@ class HistoryItem extends Component {
         );
     }
 }
+

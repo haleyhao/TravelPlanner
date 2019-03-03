@@ -25,6 +25,7 @@ class PlanHolder extends React.Component {
     // fetch three plans
     let city = this.props.location.state.city;
     fetch(`${API_ROOT}/recommend?city=${city}&keyword=hao`)
+
         .then(response => {
           return response.json();
         })
@@ -48,6 +49,7 @@ class PlanHolder extends React.Component {
         })
         .catch(e => {
           console.log(e);
+
         });
   }
 

@@ -142,3 +142,4 @@ class RegistrationForm extends React.Component {
 }
 
 export const Register = Form.create({ name: "register" })(RegistrationForm);
+

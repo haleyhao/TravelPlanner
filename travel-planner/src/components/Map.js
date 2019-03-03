@@ -14,6 +14,7 @@ const {
 
 // Define the map area
 const MapWithADirectionsRenderer = compose(
+
     withProps({
       googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${MAP_API_KEY}&v=3.exp&libraries=${MAP_LIBRARIES}`,
       loadingElement: <div style={{ height: `100%` }} />,
@@ -84,13 +85,16 @@ const MapWithADirectionsRenderer = compose(
       {props.directions && <DirectionsRenderer directions={props.directions} />}
       {/*<DirectionsRenderer directions={props.directions}/>*/}
     </GoogleMap>
+
 ));
 
 // Define the helper functions needed by the pending list and selected list
 // Define the style of draggable list
 const grid = 8;
 const getListStyle = isDraggingOver => ({
+
   background: isDraggingOver ? '#005d65' : '#f5f5f5',
+
   padding: grid,
   width: 250
 });
@@ -102,7 +106,9 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   margin: `0 0 ${grid}px 0`,
 
   // change background colour if dragging
+
   background: isDragging ? '#fafafa' : '#e8e8e8',
+
 
   // styles we need to apply on draggables
   ...draggableStyle
@@ -182,9 +188,11 @@ export class Map extends React.Component {
 
   handleSave = () => {
     this.props.handleSavePlan(
+
         this.state.selectedPlaces.place_ids,
         this.state.selectedPlaces.place_names,
         this.state.selectedPlaces.place_geos
+
     );
   };
 
@@ -194,9 +202,11 @@ export class Map extends React.Component {
     console.log("optimize");
     const place_geos = this.state.selectedPlaces.place_geos;
     if (
+
         place_geos === null ||
         place_geos === undefined ||
         place_geos.length < 3
+
     ) {
       return;
     }
@@ -206,6 +216,7 @@ export class Map extends React.Component {
         minLon = place_geos[0].lng;
     let maxLat = minLat,
         maxLon = minLon;
+
 
     for (let i = 1; i < place_geos.length; i++) {
       minLat = Math.min(minLat, place_geos[i].lat);
@@ -229,6 +240,7 @@ export class Map extends React.Component {
     // let optimalOrder = [];
     const self = this;
     directionService.route(
+
         {
           origin: new google.maps.LatLng(minLat, minLon),
           waypoints: wayPoints,
@@ -249,8 +261,10 @@ export class Map extends React.Component {
   setNewOrder = order => {
     //console.log(order);
     let place_ids = [],
+
         place_names = [],
         place_geos = [];
+
     for (let i = 0; i < this.state.selectedPlaces.place_ids.length; i++) {
       place_ids.push("");
       place_names.push("");

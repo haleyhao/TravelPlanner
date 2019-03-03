@@ -11,15 +11,18 @@ class PlanHolder extends React.Component {
     super(props);
     this.handleMouseHover = this.handleMouseHover.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.handleLoading = this.handleLoading.bind(this);
     this.state = {
       isClicked: false,
       isLoading: true,
       plans: [{}, {}, {}],
       hoveredIndex: -1,
       savedPlan: {},
-      formHistoryList: false
+      fromHistoryList: false
     };
   }
+
+  fetchedPlans = [];
 
   componentDidMount() {
     // fetch three plans
@@ -42,21 +45,40 @@ class PlanHolder extends React.Component {
           };
         });
         this.setState({
-          isLoading: false,
-          plans
+          // isLoading: false,
+          plans,
         });
+        this.fetchedPlans = plans;
       })
       .catch(e => {
         console.log(e);
       });
   }
 
+  handleLoading = () => {
+    this.setState({isLoading: false});
+  };
+
   handleMouseHover(index) {
+    // console.log(this.state.plans);
+    // console.log(index);
+    // console.log(this.state);
     this.setState({ hoveredIndex: index });
   }
 
   handleClick = () => {
-    this.setState({ isClicked: true });
+    // console.log(this.state.fromHistoryList);
+    if (this.state.isClicked) {
+      this.setState({
+        isClicked: false,
+        fromHistoryList: false,
+        plans: this.fetchedPlans,
+      })
+    } else {
+      this.setState({
+        isClicked: true
+      })
+    }
   };
 
   handleSavePlan = (selectedPlaceIds, selectedAddrs, selectedGeoInfos) => {
@@ -90,7 +112,8 @@ class PlanHolder extends React.Component {
           <Loading text="Fetching three suggested plans...." />
         ) : (
           <div>
-            {!this.state.isClicked && (
+            {this.state.isClicked ?
+                <button onClick={this.handleClick}>Show all the three plans</button> :
               <div className="plan-holder">
                 {this.state.plans.map((plan, index) => {
                   return (
@@ -104,7 +127,9 @@ class PlanHolder extends React.Component {
                   );
                 })}
               </div>
-            )}
+            }
+          </div> )}
+            <div>
             <div className="history-map-holder">
               {
                 this.state.isClicked &&
@@ -120,6 +145,8 @@ class PlanHolder extends React.Component {
                   <Map
                     places={this.state.plans}
                     handleSavePlan={this.handleSavePlan}
+                    city={this.props.location.state.city}
+                    handleLoading={this.handleLoading}
                   />
                 ) : (
                   <Map
@@ -129,12 +156,13 @@ class PlanHolder extends React.Component {
                         : {}
                     }
                     handleSavePlan={this.handleSavePlan}
+                    city={this.props.location.state.city}
+                    handleLoading={this.handleLoading}
                   />
                 )}
               </div>
             </div>
           </div>
-        )}
       </div>
     );
   }

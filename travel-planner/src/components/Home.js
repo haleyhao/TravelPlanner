@@ -36,8 +36,8 @@ class Home extends React.Component {
 
   // TODO.. implement API 4.2, check availability, if not available, pop out
   handleClick = () => {
-    console.log("handleClick");
-    console.log(this.textInput.props.value === "New York");
+    // console.log("handleClick");
+    // console.log(this.textInput.props.value === "New York");
     if (this.textInput.props.value === "New York") {
       this.props.history.push({
         pathname: "/result",

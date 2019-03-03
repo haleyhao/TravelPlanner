@@ -17,3 +17,9 @@
     display: flex;
     justify-content: space-between;
 }
+.info-window {
+    background-color: whitesmoke;
+    padding: 20px;
+    font-size: 16px;
+    color: black;
+}

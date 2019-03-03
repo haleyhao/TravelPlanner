@@ -165,7 +165,7 @@ export class History extends Component {
     render() {
         return (
             <div className="container">
-                <h1 style={{fontSize: 20, color:'#006170',fontWeight:600}}>History Plans</h1>
+                <h1 style={{fontSize: 15, color:'#1062a8',fontWeight:600}}>History Plans</h1>
 
                 <List
                     locale={{emptyText: "No History Plan"}}
@@ -198,7 +198,7 @@ class HistoryItem extends Component {
                 <List.Item
                     onClick={this.updateMap}
                 >
-                    <h1 style={{fontSize: 14, color:'#00474f',fontWeight:700}}>Plan {this.props.plan.index}</h1>
+                    <h1 style={{fontSize: 14, color:'#1062a8',fontWeight:700}}>Plan {this.props.plan.index}</h1>
 
                 </List.Item>
                 <Icon type="close-circle" theme="filled" onClick={this.remove}/>

@@ -1,0 +1,20 @@
+.google-map {
+    height: 100%;
+    /*display: flex;*/
+}
+.map-list {
+    display: flex;
+    background-color: rgba(245, 245, 245, 0.80);
+    border-radius: 10px;
+    padding: 10px;
+}
+.selected-places-list {
+    background-color: rgba(245, 245, 245, 0.80);
+    border-radius: 10px;
+    /*height: 600px;*/
+}
+.selected-places-list-content {
+    /*background-color: rgba(245, 32, 30, 0.8);*/
+    display: flex;
+    justify-content: space-between;
+}

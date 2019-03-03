@@ -1,0 +1,10 @@
+.container {
+  width: 15%;
+  /*margin-left: auto;*/
+  /*margin-right: auto;*/
+  /*margin-bottom: 20px;*/
+
+  background-color: rgba(245, 245, 245, 0.80);
+  padding: 20px;
+  border-radius: 10px;
+}

@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {List, Icon, message} from "antd";
+import {List, Icon, message, Card} from "antd";
 import {API_ROOT} from "../constants";
 
 export class History extends Component {
@@ -62,7 +62,7 @@ export class History extends Component {
                 this.props.savedPlan.addrs,
                 this.props.savedPlan.geoInfos
             ],
-            plan_id: new Date().getTime()
+            plan_id: `${localStorage.getItem('user_id')}:${new Date().getTime()}`
         };
 
         const newPlans = this.state.plans.concat(plan);
@@ -79,12 +79,12 @@ export class History extends Component {
             selectedPlan: newPlans.length
         });
 
-        console.log(plan.plan_id);
+        // console.log(plan.plan_id);
         fetch(`${API_ROOT}/history`, {
             method: "POST",
             body: JSON.stringify({
                 user_id: `${localStorage.getItem('user_id')}`,
-                plan_id: `${localStorage.getItem('user_id')}:${plan.plan_id}`,
+                plan_id: plan.plan_id,
                 place_ids: plan.content[0]
             })
         })
@@ -95,7 +95,7 @@ export class History extends Component {
                 throw new Error(response.statusText);
             })
             .then(data => {
-                console.log(data);
+                // console.log(data);
                 message.success("Save success!");
             })
             .catch(e => {
@@ -109,6 +109,7 @@ export class History extends Component {
     // API 8 implementation
     deletePlan = (index) => {
         // Fix the CORS problem
+        console.log(this.state.plans[index].plan_id);
         fetch(`https://cors-anywhere.herokuapp.com/${API_ROOT}/history`, {
             method: "DELETE",
             body: JSON.stringify({
@@ -123,7 +124,7 @@ export class History extends Component {
                 throw new Error(response.statusText);
             })
             .then(data => {
-                console.log(data);
+                // console.log(data);
                 message.success("Delete success!");
             })
             .catch(e => {
@@ -133,6 +134,7 @@ export class History extends Component {
     };
 
     removePlan = index => {
+
         let newPlans = [...this.state.plans];
         newPlans.splice(index, 1);
 
@@ -165,10 +167,16 @@ export class History extends Component {
     render() {
         return (
             <div className="container">
-                <h1>History Plans</h1>
-
+                <h1 style={{
+                    fontSize: 20,
+                    fontFamily: "Montserrat, sans-serif",
+                    color: '#006170',
+                    fontWeight: 600
+                }}>History Plans</h1>
                 <List
+                    style={{overflow: 'scroll', height: '450px'}}
                     locale={{emptyText: "No History Plan"}}
+                    // itemLayout="vertical"
                     dataSource={this.state.plans}
                     renderItem={item => (
                         <HistoryItem
@@ -194,15 +202,30 @@ class HistoryItem extends Component {
 
     render() {
         return (
-            <div>
-                <List.Item
-                    onClick={this.updateMap}
+            <List.Item>
+                <div
+                    className='history-item'
                 >
-                    Plan {this.props.plan.index}
+                    {/*<div style={{fontFamily: "Montserrat, sans-serif", fontSize: 14, color: '#1062a8', fontWeight: 700}}*/}
+                    {/*onClick={this.updateMap}>Plan {this.props.plan.index}</div>*/}
+                    <Card
+                        title={`Plan${this.props.plan.index}`}
+                        onClick={this.updateMap}
+                    >
+                        <p style={{
+                            fontFamily: "Montserrat, sans-serif",
+                            fontSize: 14,
+                            fontWeight: 400
+                        }}>
+                            {`${this.props.plan.content[1][0]} ---> ${this.props.plan.content[1][this.props.plan.content[1].length - 1]}`}
+                        </p>
+                    </Card>
+                    <div>
+                        <Icon style={{align: "center"}} type="close-circle" theme="filled" onClick={this.remove}/>
+                    </div>
+                </div>
 
-                </List.Item>
-                <Icon type="close-circle" theme="filled" onClick={this.remove}/>
-            </div>
+            </List.Item>
 
         );
     }

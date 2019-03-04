@@ -99,9 +99,6 @@ class PlanHolder extends React.Component {
         place_names: plan.content[1],
         place_geos: plan.content[2]
       }
-      // placeIds: plan.content[0],
-      // placeNames: plan.content[1],
-      // placeGeos: plan.content[2]
     });
   };
 
@@ -113,7 +110,7 @@ class PlanHolder extends React.Component {
         ) : (
           <div>
             {this.state.isClicked ?
-                <button onClick={this.handleClick}>Show all the three plans</button> :
+                <button onClick={this.handleClick} className='return-button'>Show all the three plans</button> :
               <div className="plan-holder">
                 {this.state.plans.map((plan, index) => {
                   return (

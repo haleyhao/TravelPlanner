@@ -4,7 +4,12 @@
   /*margin-right: auto;*/
   /*margin-bottom: 20px;*/
 
-  background-color: aliceblue;
-  padding: 20px;
+  background-color: rgba(245, 245, 245, 0.80);
+  padding: 10px;
   border-radius: 10px;
+}
+.history-item {
+  /*display: flex;*/
+  /*justify-content: space-evenly;*/
+  cursor: pointer;
 }

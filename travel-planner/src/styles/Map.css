@@ -4,7 +4,7 @@
 }
 .map-list {
     display: flex;
-    background: aliceblue;
+    background-color: rgba(245, 245, 245, 0.80);
     border-radius: 10px;
     padding: 10px;
 }
@@ -25,5 +25,13 @@
 }
 .drop-scroll {
     overflow: scroll;
-    height: 440px;
+    height: 410px;
+}
+.buttons {
+    display: flex;
+    margin-top: 10px;
+}
+.button {
+    width: 50%;
+    cursor: pointer;
 }

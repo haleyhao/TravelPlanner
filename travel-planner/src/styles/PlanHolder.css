@@ -15,3 +15,17 @@
     justify-content: center;
     margin: 10px;
 }
+.return-button {
+    background: transparent; outline: none;
+    position: relative;
+    border: 2px solid #111;
+    padding: 15px 50px;
+    overflow: hidden;
+    font: 300 1em/1.5 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 900;
+    font-size: 1em;
+    transition: all .3s ease-in-out;
+    cursor: pointer;
+}

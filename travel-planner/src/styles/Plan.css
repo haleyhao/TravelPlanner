@@ -37,7 +37,7 @@
 .plan div{
     text-transform: uppercase;
     letter-spacing: 3px;
-    font-weight: 800;
-    font-size: .8em;
+    font-weight: 900;
+    font-size: 1em;
     transition: all .3s ease-in-out;
 }

@@ -23,21 +23,21 @@ class RegistrationForm extends React.Component {
             password: values.password
           })
         })
-          .then(response => {
-            if (response.ok) {
-              return response.text();
-            }
-            throw new Error(response.statusText);
-          })
-          .then(data => {
-            console.log(data);
-            message.success("Registration Succeed!");
-            this.props.history.push("/login");
-          })
-          .catch(e => {
-            console.log(e);
-            message.error("Registration Failed.");
-          });
+            .then(response => {
+              if (response.ok) {
+                return response.text();
+              }
+              throw new Error(response.statusText);
+            })
+            .then(data => {
+              console.log(data);
+              message.success("Registration Succeed!");
+              this.props.history.push("/login");
+            })
+            .catch(e => {
+              console.log(e);
+              message.error("Registration Failed.");
+            });
       }
     });
   };
@@ -91,52 +91,52 @@ class RegistrationForm extends React.Component {
     };
 
     return (
-      <Form onSubmit={this.handleSubmit} className="register">
-        <Form.Item {...formItemLayout} label="Email">
-          {getFieldDecorator("email", {
-            rules: [{ required: true, message: "Please input your email!" }]
-          })(<Input />)}
-        </Form.Item>
-        <Form.Item {...formItemLayout} label="Name">
-          {getFieldDecorator("name", {
-            rules: [{ required: true, message: "Please input your name!" }]
-          })(<Input />)}
-        </Form.Item>
-        <Form.Item {...formItemLayout} label="Password">
-          {getFieldDecorator("password", {
-            rules: [
-              {
-                required: true,
-                message: "Please input your password!"
-              },
-              {
-                validator: this.validateToNextPassword
-              }
-            ]
-          })(<Input type="password" />)}
-        </Form.Item>
-        <Form.Item {...formItemLayout} label="Confirm Password">
-          {getFieldDecorator("confirm", {
-            rules: [
-              {
-                required: true,
-                message: "Please confirm your password!"
-              },
-              {
-                validator: this.compareToFirstPassword
-              }
-            ]
-          })(<Input type="password" onBlur={this.handleConfirmBlur} />)}
-        </Form.Item>
-        <Form.Item {...tailFormItemLayout}>
-          <Button type="primary" htmlType="submit">
-            Register
-          </Button>
-          <p>
-            I already have an account, go back to <Link to="/login">login</Link>
-          </p>
-        </Form.Item>
-      </Form>
+        <Form onSubmit={this.handleSubmit} className="register">
+          <Form.Item {...formItemLayout} label="Email">
+            {getFieldDecorator("email", {
+              rules: [{ required: true, message: "Please input your email!" }]
+            })(<Input />)}
+          </Form.Item>
+          <Form.Item {...formItemLayout} label="Name">
+            {getFieldDecorator("name", {
+              rules: [{ required: true, message: "Please input your name!" }]
+            })(<Input />)}
+          </Form.Item>
+          <Form.Item {...formItemLayout} label="Password">
+            {getFieldDecorator("password", {
+              rules: [
+                {
+                  required: true,
+                  message: "Please input your password!"
+                },
+                {
+                  validator: this.validateToNextPassword
+                }
+              ]
+            })(<Input type="password" />)}
+          </Form.Item>
+          <Form.Item {...formItemLayout} label="Confirm Password">
+            {getFieldDecorator("confirm", {
+              rules: [
+                {
+                  required: true,
+                  message: "Please confirm your password!"
+                },
+                {
+                  validator: this.compareToFirstPassword
+                }
+              ]
+            })(<Input type="password" onBlur={this.handleConfirmBlur} />)}
+          </Form.Item>
+          <Form.Item {...tailFormItemLayout}>
+            <Button style={{backgroundColor:'#005a62'}} htmlType="submit" >
+              <h1 style={{fontSize: 17, color:'#F6F6F6',fontWeight:400}}>Register</h1>
+            </Button>
+            <p style={{fontSize: 15, color:'#00353d',fontWeight:500}}>
+              I already have an account, go back to <Link style={{fontSize: 18, color:'#00474f', fontWeight:500}} to="/login">login</Link>
+            </p>
+          </Form.Item>
+        </Form>
     );
   }
 }

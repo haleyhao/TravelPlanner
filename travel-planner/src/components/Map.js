@@ -1,7 +1,6 @@
 import React from "react";
 import {API_ROOT, MAP_API_KEY, MAP_LIBRARIES} from "../constants";
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
-import {Icon} from "antd";
 import {Loading} from "./Loading";
 
 const {compose, withProps, lifecycle, withStateHandlers} = require("recompose");
@@ -20,7 +19,7 @@ const MapWithADirectionsRenderer = compose(
     withProps({
         googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${MAP_API_KEY}&v=3.exp&libraries=${MAP_LIBRARIES}`,
         loadingElement: <div style={{height: `100%`}}/>,
-        containerElement: <div style={{height: `450px`, width: `450px`}}/>,
+        containerElement: <div style={{height: `500px`, width: `500px`}}/>,
         mapElement: <div style={{height: `100%`}}/>
     }),
     withStateHandlers(() => ({
@@ -131,7 +130,7 @@ const MapWithADirectionsRenderer = compose(
                     key={`marker-${index}`}
                 >
                     {props.isOpen[index] && <InfoBox
-                        onCloseClick={() => {props.onToggleOpen(index)}}
+                        onCloseClick={() => {props.onToggleOpen(index, placeInfo.placeNames)}}
                         options={{closeBoxURL: ``, enableEventPropagation: true}}
                     >
                         <div className='info-window'>
@@ -139,7 +138,11 @@ const MapWithADirectionsRenderer = compose(
                                 {placeInfo.placeNames}
                             </div>
                             <div>
-                                <a  href={`https://en.wikipedia.org/wiki/${placeInfo.placeNames.replace(/\s+/g, '_')}`} target="_blank">
+                                <a  href={`https://en.wikipedia.org/wiki/${placeInfo.placeNames.replace(/\s+/g, '_')}`}
+                                    target="_blank"
+                                    onClick={() => {props.onToggleOpen(index, placeInfo.placeNames)}}
+                                    rel="noopener noreferrer"
+                                >
                                     see more
                                 </a>
                             </div>
@@ -158,7 +161,7 @@ const MapWithADirectionsRenderer = compose(
 // Define the style of draggable list
 const grid = 8;
 const getListStyle = isDraggingOver => ({
-    background: isDraggingOver ? "lightblue" : "grey",
+    background: isDraggingOver ? '#005d65' : '#f5f5f5',
     padding: grid,
     width: 250
 });
@@ -167,10 +170,15 @@ const getItemStyle = (isDragging, draggableStyle) => ({
     // some basic styles to make the items look a bit nicer
     userSelect: "none",
     padding: grid * 2,
-    margin: `0 0 ${grid}px 0`,
+    margin: `0 0 ${grid}px 0 auto`,
+    textAlign: "left",
+    border: "0.5px ridge",
+    fontFamily: "Montserrat, sans-serif",
+    fontSize: 14,
+    fontWeight: 400,
 
-    // change background colour if dragging
-    background: isDragging ? "lightgreen" : "lightgrey",
+// change background colour if dragging
+    background: isDragging ? '#fafafa' : '#e8e8e8',
 
     // styles we need to apply on draggables
     ...draggableStyle
@@ -491,7 +499,7 @@ export class Map extends React.Component {
                                 className="selected-pending-lists"
                             >
                                 <div>
-                                    <p>Pending places</p>
+                                    <p style={{fontSize: 20, color:'#006170',fontFamily: "Montserrat, sans-serif",fontWeight:600}}>Pending Places</p>
                                     <div className="drop-scroll">
                                         <Droppable droppableId="pending" >
                                             {(provided, snapshot) => (
@@ -538,7 +546,7 @@ export class Map extends React.Component {
 
                                 </div>
                                 <div className="list">
-                                    <p>Selected places</p>
+                                    <p style={{fontSize: 20, color:'#006170',fontFamily: "Montserrat, sans-serif",fontWeight:600}}>Selected Places</p>
                                     <div className="drop-scroll">
                                         <Droppable droppableId="selected">
                                             {(provided, snapshot) => (
@@ -547,7 +555,7 @@ export class Map extends React.Component {
                                                     style={getListStyle(snapshot.isDraggingOver)}
                                                 >
                                                     {this.state.selectedPlaces.place_names === undefined ? (
-                                                        <p>No places selected</p>
+                                                        null
                                                     ) : (
                                                         this.state.selectedPlaces.place_names.map((item, index) => (
                                                             <div key={index}>
@@ -583,8 +591,10 @@ export class Map extends React.Component {
                                         </Droppable>
                                     </div>
 
-                                    <button onClick={this.optimizeRouteOrder}>optimize</button>
-                                    <button onClick={this.handleSave}>Save</button>
+                                    <div className='buttons'>
+                                        <button onClick={this.optimizeRouteOrder} className='button'><h1 style={{fontSize:12,color:'#00353d',fontFamily: "Montserrat, sans-serif",fontWeight:700}} >Optimize</h1></button>
+                                        <button onClick={this.handleSave} className='button'> <h1 style={{fontSize:12,color:'#00353d',fontFamily: "Montserrat, sans-serif",fontWeight:700}} >Save</h1> </button>
+                                    </div>
                                 </div>
                             </DragDropContext>
 
